@@ -1,0 +1,12 @@
+old_stuff.tex
+open_questions.tex
+*.aux
+*.blg
+*.log
+*.out 
+*.gz
+*.bbl
+*.fls
+*.fdb_latexmk
+*.bst
+*Notes.bib
