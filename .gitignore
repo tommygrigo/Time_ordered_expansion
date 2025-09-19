@@ -8,5 +8,5 @@ open_questions.tex
 *.bbl
 *.fls
 *.fdb_latexmk
-*.bst
+*.csv
 *Notes.bib

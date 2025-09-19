@@ -6,7 +6,7 @@
 \pgfplotsset{compat = newest}
 
 
-\newcommand{\Fc}{\mathcal{F}}
+\newcommand{\Ec}{\mathcal{E}}
 \newcommand{\Lc}{\mathcal{L}}
 \newcommand{\norm}[1]{\left|\left| #1 \right|\right|}
 
@@ -15,9 +15,9 @@
 \centering
 \begin{tikzpicture}
 \begin{axis}[
-xmin = 0, xmax = 20,
-%ymin = -1.1, ymax = 1.1,
-xtick distance = 2,
+xmin = 0, xmax = 50,
+ymin = 1e-55, ymax = 100,
+xtick distance = 5,
 grid = both,
 minor tick num = 1,
 major grid style = {lightgray},
@@ -31,16 +31,16 @@ legend pos = south west,
 ymode=log,
 ]
 
-\addplot[color=Turquoise, thick, mark=*, only marks] table [x=k, y=n, col sep=comma]{../data/norm.csv};
-\addplot[color=Plum, mark = o, only marks] table [x=k, y=o, col sep=comma]{../data/norm.csv};
-\addplot[color=SeaGreen, very thick, no marks, dashed] table [x=k, y=b, col sep=comma]{../data/norm.csv};
-\addplot[color=Peach, very thick, no marks, dashed] table [x=k, y=s, col sep=comma]{../data/norm.csv};
+\addplot[color=Turquoise, thick, mark=*, only marks] table [x=k, y=n, col sep=comma]{../data/E_norm.csv};
+\addplot[color=Plum, mark = o, only marks] table [x=k, y=o, col sep=comma]{../data/E_norm.csv};
+\addplot[color=SeaGreen, thick, no marks, dashed] table [x=k, y=b, col sep=comma]{../data/E_norm.csv};
+\addplot[color=Peach, very thick, no marks, dashed] table [x=k, y=s, col sep=comma]{../data/E_norm.csv};
 
 
 
 \legend{
-$\norm{\Fc_{(k)}}_{HS}$,
-$\norm{\Fc_{(k)}}_{op}$,
+$\norm{\Ec_{(k)}}_{HS}$,
+$\norm{\Ec_{(k)}}_{op}$,
 $\norm{\Lc}_{HS}^k/k!$,
 $\norm{\Lc}_{op}^k/k!$
 }
