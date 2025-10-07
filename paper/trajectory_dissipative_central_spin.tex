@@ -59,7 +59,6 @@ legend style={at={(0.5,0.22)},anchor=north, column sep = 6pt, legend columns = 4
 ]
 
 
-\addplot[black, very thick, no marks, dashed] table [x=t, y=z, col sep=comma]{../data/traj_dissipative_central_spin_exact.csv};
 \addplot+[no marks, opacity=.8, thick] table [x=t, y=z, col sep=comma]{../data/traj_dissipative_central_spin_1.csv};
 \addplot+[no marks, opacity=.8, thick] table [x=t, y=z, col sep=comma]{../data/traj_dissipative_central_spin_2.csv};
 \addplot+[no marks, opacity=.8, thick] table [x=t, y=z, col sep=comma]{../data/traj_dissipative_central_spin_3.csv};
@@ -67,17 +66,19 @@ legend style={at={(0.5,0.22)},anchor=north, column sep = 6pt, legend columns = 4
 \addplot+[no marks, opacity=.8, thick] table [x=t, y=z, col sep=comma]{../data/traj_dissipative_central_spin_10.csv};
 \addplot+[no marks, opacity=.8, thick] table [x=t, y=z, col sep=comma]{../data/traj_dissipative_central_spin_20.csv};
 
+\addplot[black, very thick, no marks, dashed] table [x=t, y=z, col sep=comma]{../data/traj_dissipative_central_spin_exact.csv};
+
 \addplot+[mark=x, only marks, black, very thick, forget plot] table [x=t, y=z, col sep=comma]{../data/dissipative_central_spin_final_points.csv};
 
 
 \legend{
-    exact,
 $N=1$,
 $N=2$,
 $N=3$,
 $N=4$,
 $N=10$,
 $N=20$,
+    exact,
 }
 
 

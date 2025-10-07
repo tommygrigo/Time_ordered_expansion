@@ -59,22 +59,24 @@ legend style={at={(0.25,0.3)},anchor=north, column sep = 6pt, legend columns = 2
                 title style={at={(0.5,0.84)},anchor=north,yshift=-0.1},
 ]
 
-
-\addplot[black, very thick, no marks, dashed] table [x=t, y=z, col sep=comma]{../data/traj_spin_chain_exact.csv};
-
 \addplot+[no marks, opacity=.8, thick] table [x=t, y=z, col sep=comma]{../data/traj_spin_chain2.csv};
 \addplot+[no marks, opacity=.8, thick] table [x=t, y=z, col sep=comma]{../data/traj_spin_chain4.csv};
 \addplot+[no marks, opacity=.8, thick] table [x=t, y=z, col sep=comma]{../data/traj_spin_chain10.csv};
 \addplot+[no marks, opacity=.8, thick] table [x=t, y=z, col sep=comma]{../data/traj_spin_chain20.csv};
 
+\addplot[black, very thick, no marks, dashed] table [x=t, y=z, col sep=comma]{../data/traj_spin_chain_exact.csv};
+
+
 \addplot+[mark=x, only marks, black, very thick, forget plot] table [x=t, y=z, col sep=comma]{../data/spin_chain_final_points.csv};
 
+
+
 \legend{
-exact,
 $N=2$,
 $N=4$,
 $N=10$,
 $N=20$,
+exact,
 }
 \end{axis}
 \end{tikzpicture}

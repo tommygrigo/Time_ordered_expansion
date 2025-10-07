@@ -44,20 +44,33 @@
 
 \date{\today}
 
+\begin{abstract}
+    In this work we propose a novel numerical method to compute an approximation of the time-convolutionless master equation by leveraging a series expansion in time. The proposed method is tested against prototypical models of interest including a dephasing spin-boson model a central spin model and an Ising spin chain. 
+\end{abstract}
+
 \maketitle
 
 \section{Introduction}
 
-\TG{\cite{benatti2024quantum} somewhere.}
+For the reader's convenience we next summarize the main contributions of this work:  
+\begin{itemize}
+    \item In Sec. \label{sec:time_ordered} we propose a novel numerical method to compute an approximate version of the time-convolutionless master equation. Throughout the paper we highlight both the strengths and weaknesses of the proposed approximation procedure. Namely: the proposed procedure is simpler (numerically and analitically) than the alternatives, allows for an initial model that is in Lindblad form (not only purely Hamiltonian) and does not rely on a weak coupling assumption hence it allows to study systems even in strong coupling regimes. On the other hand the proposed reduction procedure relies on an expansion in time and thus provides a good approximation only for small times. While this aspect is limiting, similar restriction also hold in the well known approximations of the time-convolutionless master equation proposed by \cite{shibata_generalized_1977}.
+    \item In Sec. \ref{sec:cptp_second_order} we prove that, when the original dynamics is purely Hamiltonian, the proposed first and second order approximation provide a CPTP (two-parameter) semigroup.
+    \item In Sec. \ref{sec:applications} we test the proposed procedure on several prototypical examples including: a ``classical'' linear model, a dephasing spin boson model, a central spin model and and Ising spin chain. 
+\end{itemize}
+
+It is important to point out that the method proposed in this work is not intended to substitute the perturbative approach at deriving the time- convolutionless master equation (TCL ME) but rather to provide an alternative that can be of use whenever the main assumptions of the standard method do not hold, e.g. in the strong coupling regime. 
+
 
 \section{Problem setting and known result}
 \label{sec:problem_setting}
 \subsection{Problem setting}
 
-Let us consider a quantum system defined on a Hilbert space $\Hc$, and let $\Bf(\Hc)$ denote the set of bounded operators acting on $\Hc$. Unless differently specified, we only consider finite-dimensional systems, i.e. $\dim(\Hc)<\infty$, $\Hc\simeq\Cb^n$ and $\Bf(\Hc)\simeq \Cb^{n\times n}.$
-The state of such a system is described by a density operator $\rho\in\Df(\Hc)$ with $\Df(\Hc) = \{\rho\in\Bf(\Hc)|\, \rho=\rho^\dag\geq0,\,\tr\rho=1\}$. We here assume that the state of the system evolves according to the Von-Neumman master equation 
+Let us consider a quantum system defined on a Hilbert space $\Hc$, and let $\Bf(\Hc)$ denote the set of bounded operators acting on $\Hc$. Unless differently specified, We only consider finite-dimensional systems, i.e. $\dim(\Hc)<\infty$, $\Hc\simeq\Cb^n$ and $\Bf(\Hc)\simeq \Cb^{n\times n}.$
+The state of such a system is described by a density operator $\rho\in\Df(\Hc)$ with $\Df(\Hc) = \{\rho\in\Bf(\Hc)|\, \rho=\rho^\dag\geq0,\,\tr\rho=1\}$. Here, We assume that the state of the system evolves according to the Von-Neumman master equation 
 \begin{equation}
     \dot{\rho}_t = \Lc(\rho_t)
+    \label{eq:original_model}
 \end{equation}
 where $\rho_0\in\Df(\Hc)$ is the system's initial condition, and $\Lc$ is the celebrated Lindblad (or GKLS) generator \cite{lindblad1976generators,Gorini:1975nb}: 
 \begin{equation}
@@ -65,18 +78,18 @@ where $\rho_0\in\Df(\Hc)$ is the system's initial condition, and $\Lc$ is the ce
     \label{eqn:lindblad_generator}
 \end{equation}
 where $H=H^\dag$ is the system's Hamiltonian and $\Dc_L(\rho) = L\rho L^\dag - \um\{L^\dag L, \rho\}$ represents the system's dissipation toward a Markovian environment represented by a set of operators $\{L_k\}$ called noise operators. The evolution of the quantum system is then described by the exponential map $\rho_t = e^{\Lc t}(\rho_0)$. Importantly, $e^{\Lc t}$ generates a quantum dynamical semigroup, i.e. a one-parameter semigroup of completely positive (CP) and trace preserving maps (TP).
-In the following we will say that a super-operator is of \textit{Lindblad-type} if it can be put in the form of equation \eqref{eqn:lindblad_generator}.
+In the following we will say that a super-operator is of \textit{Lindblad-type} if it can be put in the form of Eq. \eqref{eqn:lindblad_generator}.
 
-Note that, while physically the most natural setting is the Hamiltonian one, i.e. $\Lc(\cdot)=-i[H,\cdot]$, mathematically there is no need to restrict to this case. For this reason we here start with the general assumption that $\Lc$ is a generator of Lindblad form and then focus on the Hamiltonian case when necessary.
+Note that, while physically the most natural setting is the Hamiltonian one, i.e. $\Lc(\cdot)=-i[H,\cdot]$, mathematically there is no need to restrict to this case. For this reason, in this work, we start with the general assumption that $\Lc$ is a generator of Lindblad form and then focus on the Hamiltonian case when necessary.
 
-We next assume to be given a CPTP, not necessarily orthogonal (w.r.t. $\inner{\cdot}{\cdot}_{HS}$), projector $\Pc:\Bf(\Hc)\to\Bf(\Hc)$, $\Pc^2=\Pc$, whose image we denote by $\Vs \equiv {\rm Im}\Pc$. This provides a generalization to the superoperator projector setting considered by \cite{breuer2006,breuer2007}.  Furthermore, for the sake of simplicity, we assume that $\Pc$ admits a full rank fixed point, i.e. $\exists\rho\in\Df(\Hc)$, $\rho>0$ such that $\Pc(\rho)=\rho$. 
-As we shall see in more details later (in Sec.\ref{sec:cptp_first_order}) such a projector is in fact a conditional expectation and enjoys some useful properties. For the moment however, it is sufficient to know that $\Pc$ can be decomposed in two factors $\Pc = \Jc\Rc$ which take the name of reduction and injection maps $\Rc:\Bf(\Hc)\to\As$ and $\Jc:\As\to\Bf(\Hc)$ such that $\Rc\Jc = \Ic_\Kc$ and ${\rm Im}\Jc = \Vs$ and where $\As\subseteq\Bf(\Kc)$ is a $*$-subalgebra of $\Bf(\Kc)$ for some Hilbert space $\Kc$, $\dim(\Kc)\leq\dim(\Hc)$.
+Next, assume to be given a CPTP, not necessarily orthogonal (w.r.t. $\inner{\cdot}{\cdot}_{HS}$), projector $\Pc:\Bf(\Hc)\to\Bf(\Hc)$, $\Pc^2=\Pc$, whose image will be denoted by $\Vs \equiv {\rm Im}\Pc$. This provides a generalization to the superoperator projector setting considered by \cite{breuer2006,breuer2007}.  Furthermore, for the sake of simplicity, I assume that $\Pc$ admits a full rank fixed point, i.e. $\exists\rho\in\Df(\Hc)$, $\rho>0$ such that $\Pc(\rho)=\rho$. 
+As we shall see in more details later (in Sec.\ref{sec:cptp_first_order}) such a projector is in fact a conditional expectation and enjoys some useful properties. For the moment however, it is sufficient to know that $\Pc$ can be decomposed in two factors $\Pc = \Jc\Rc$ which take the name of reduction and injection maps $\Rc:\Bf(\Hc)\to\Bf(\Kc)$ and $\Jc:\Bf(\Kc)\to\Bf(\Hc)$ such that $\Rc\Jc = \Ic_\Kc$ and ${\rm Im}\Jc = \Vs$ ${\rm Im}\Rc=\As$ and where $\As\subseteq\Bf(\Kc)$ is a $*$-subalgebra of $\Bf(\Kc)$ for some Hilbert space $\Kc$, $\dim(\Kc)\leq\dim(\Hc)$.
 For later convenience we shall also define the projector $\Qc\equiv \Ic-\Pc$. Note that neither $\Pc$ or $\Qc$ need to be orthogonal, i.e. self adjoint.
 
-To provide some intuition on these mathematical objects we next anticipate the reduction and injection maps we are going to use in the applications of Sec.\,\ref{sec:applications}:
+To provide some intuition on these mathematical objects we anticipate the reduction and injection maps we are going to use in the applications of Sec.\,\ref{sec:applications}:
 \begin{itemize}
-    \item Let us assume a bipartite case, i.e. $\Hc=\Hc_S\otimes\Hc_B$. We can then consider $\Pc(\rho) = \tr_B(\rho)\otimes\tau$ for some $\tau\in\Df(\Hc_B)$, $\tau>0$ to be our CPTP projector. Then, by chosing $\Kc=\Hc_S$ and $\As=\Bf(\Hc_S)$ we have the maps $\Rc(\rho) = \tr_B(\rho)$ and $\Jc(\sigma) = \sigma\otimes\tau$.
-    \item Another CPTP projector we might want to consider is the projector onto the diagonal matrix $\Pc(\rho)= \sum_{j=0}^{n-1} \ketbra{j}{j} \rho \ketbra{j}{j}$ in with case $\Kc=\Hc$, and $\As$ is the commutative algebra given by $\As\equiv\Span\{\ketbra{j}{j},\, j=0,\dots,n-1\}\simeq\Cb^n$. Then the maps $\Rc(\rho) = \sum_{j=0}^{n-1} \ketbra{j}{j}\rho \ket{j}$ in which case $\Rc(\rho)\in\Cb^n$, and  $\Jc(\sigma)=\sum_{j=0}^{n-1} \ketbra{j}{j} \bra{j}\sigma$ factorize $\Pc$.
+    \item Assume a bipartite case, i.e. $\Hc=\Hc_S\otimes\Hc_B$. We can then consider $\Pc(\rho) = \tr_B(\rho)\otimes\tau$ for some $\tau\in\Df(\Hc_B)$, $\tau>0$ to be our CPTP projector. Then, by chosing $\Kc=\Hc_S$ and $\As=\Bf(\Hc_S)$ we have the maps $\Rc(\rho) = \tr_B(\rho)$ and $\Jc(\mu) = \mu\otimes\tau$.
+    \item Another CPTP projector we might want to consider is the projector onto the diagonal matrix $\Pc(\rho)= \sum_{j=0}^{n-1} \ketbra{j}{j} \rho \ketbra{j}{j}$ in which case $\Kc=\Hc$, $\As$ is the commutative algebra given by $\As\equiv\Span\{\ketbra{j}{j},\, j=0,\dots,n-1\}\simeq\Cb^n$, and $\Rc(\rho) = \sum_{j=0}^{n-1} \ketbra{j}{j}\rho \ket{j}$ in which case $\mu=\Rc(\rho)\in\Cb^n$, and $\Jc(\mu)=\sum_{j=0}^{n-1} \ketbra{j}{j} \bra{j}\mu$ factorize $\Pc$.
 \end{itemize}
 
 The reduction map $\Rc$ determines the reduced state -- the one we want to keep track of: Let $\eta_t\in\Df(\Kc)$ be defined as $\eta_t = \Rc(\rho_t)$ for all $t\geq0$. 
@@ -84,29 +97,28 @@ The evolution of the reduced state is then given by
 \begin{align*}
     \eta_t = \Rc e^{\Lc t} (\rho_0) = \Rc e^{\Lc t}\Jc (\eta_0) + \Rc e^{\Lc t}\Qc (\rho_0).
 \end{align*}
-We next introduce an important simplifying assumption that will hold throughout the rest of the paper.
+We next introduce an important simplifying assumption that will hold throughout the rest of the paper and that it is often assumed in similar situations, see e.g. \cite{breuer2002theory}
 \begin{assumption}
     \label{ass:proj}
     We assume that $\Pc(\rho_0)=\rho_0$.
 \end{assumption}
-\TG{[Add a comment on the assumption and say that this is often assumed  to be true.]}
 This assumption directly implies that the evolution of the reduced state takes the form:
 \begin{equation}
     \eta_t = \Rc e^{\Lc t} \Jc (\eta_0).
 \end{equation}
 
 In this work we are interested in characterizing a time-dependent generator that approximate well the evolution of $\eta_t$ for $t\geq0$.
-To that aim let us define a density operator $\mu_t\in\Df(\Hc)$ whose evolution is described by 
+To that aim, let us define a density operator $\mu_t\in\Df(\Hc)$ whose evolution is described by 
 \begin{equation}
 \begin{cases}
     \dot{\mu}_t = \Fc_t (\mu_t)\\ \mu_0 = \eta_0
 \end{cases}
 \end{equation}
 and where $\Fc_t$ is a time-dependent generator. 
-Our aim is then to construct $\Fc_t$ so that $\mu_t\approx\eta_t$. In other words we aim to determine $\Fc_t$ so that \[\Tb e^{\int_0^t \Fc_s ds} \approx \Rc e^{\Lc t} \Jc\] where $\Tb$ denotes the time-ordering operator. The sense in which the approximation $\approx$ is intended shall be defined later.
+Our aim is then to construct $\Fc_t$ so that $\mu_t\approx\eta_t$. In other words we want to determine $\Fc_t$ so that \[\Tb e^{\int_0^t \Fc_s ds} \approx \Rc e^{\Lc t} \Jc\] where $\Tb$ denotes the time-ordering operator. The sense in which the approximation $\approx$ is intended shall be defined later.
 
 Desirable properties for $\Fc_t$ certainly include the fact that we would like $\Tb e^{\int_0^t \Fc_s ds}$ to be CPTP
-for all $t\geq0$. Note that necessary conditions to impose on $\Fc_t$ so that $\Tb e^{\int_0^t \Fc_s ds}$ is CPTP for all $t\geq0$ are not known \cite{}. 
+for all $t\geq0$. Note that necessary conditions to impose on $\Fc_t$ so that $\Tb e^{\int_0^t \Fc_s ds}$ is CPTP for all $t\geq0$ are not known \cite{benatti2024quantum}. 
 
 \begin{figure}
     \centering
@@ -119,19 +131,19 @@ A graphical representation of the approximation problem is given in Fig.\,\ref{f
 
 \subsection{Time-convolutionless master equation}
 
-Before moving to the method proposed in this work for computing the time dependent generator $\Fc_t$ we shall discuss the derivation of time-convolutionless master equations, which is the standard method found in the literature \cite{Tokieda_2025, chaturvedi_time-convolutionless_1979, nestmann_time-convolutionless_2019, shibata_generalized_1977} to solve this issue . 
+Before moving to the method proposed in this work for computing the time dependent generator $\Fc_t$ we shall discuss the derivation of time-convolutionless master equations, which is the standard method found in the literature \cite{Tokieda_2025, chaturvedi_time-convolutionless_1979, nestmann_time-convolutionless_2019, shibata_generalized_1977} to solve the issue at hand. 
 
 Dividing the evolution of $\rho_t$ in the evolution of $\Pc\rho_t$ and that of $\Qc\rho_t$ we have 
-\begin{align*}
-    \frac{d}{dt}\Pc \rho_t &= \Pc\Lc\Pc \rho_t + \Pc\Lc\Qc\rho_t,\\
+\begin{align}
+    \frac{d}{dt}\Pc \rho_t &= \Pc\Lc\Pc \rho_t + \Pc\Lc\Qc\rho_t,\label{eq:P_rho_t}\\
     \frac{d}{dt}\Qc \rho_t &= \Qc\Lc\Pc \rho_t + \Qc\Lc\Qc\rho_t.
-\end{align*}
+\end{align}
 Solving the second equation for $\Qc\rho_t$ we obtain
 \[\Qc\rho_t = e^{\Qc\Lc\Qc t} \Qc\rho_0 + \int_0^t e^{\Qc \Lc \Qc s }\Qc \Lc \Pc \rho_{t-s} ds\]
 and substituting this equation into the first equation we obtain the famous Nakajima-Zwanzig equation \cite{nakajima,zwanzig}:
-\begin{align*}
-    \frac{d}{dt}\Pc \rho_t = \Pc\Lc\Pc \rho_t &+ \Pc\Lc e^{\Qc\Lc\Qc t} \Qc\rho_0 \\&+\int_0^t \Pc\Lc\Qc e^{\Qc \Lc \Qc s }\Qc \Lc \Pc \rho_{t-s} ds.
-\end{align*}
+\begin{align}
+    \frac{d}{dt}\Pc \rho_t = \Pc\Lc\Pc \rho_t &+ \Pc\Lc e^{\Qc\Lc\Qc t} \Qc\rho_0 \nonumber\\&+\int_0^t \Pc\Lc\Qc e^{\Qc \Lc \Qc s }\Qc \Lc \Pc \rho_{t-s} ds.
+\end{align}
 In order to derive the time-convolutionless master equation we recall that 
 \(\rho_{t-s} = e^{-\Lc s}\rho_t\)
 so that 
@@ -139,24 +151,31 @@ so that
 Now, defining 
 \[\Mc_t \equiv \Ic - \int_0^t e^{\Qc \Lc \Qc s }\Qc \Lc \Pc e^{-\Lc s} ds\]
 we have 
-\[\Mc_t \Qc\rho_t = e^{\Qc\Lc\Qc t} \Qc\rho_0 + (\Ic-\Mc_t) \Pc \rho_t\]
-If we then assume that $\Mc_t$ is invertible for all $t\geq0$ we obtain 
-\[\Qc\rho_t = \Mc_t^{-1}e^{\Qc\Lc\Qc t} \Qc\rho_0 + (\Mc_t^{-1} -\Ic) \Pc \rho_t\]
-Substituting this inside the equation above we obtain 
-\begin{align*}
-    \frac{d}{dt}\Pc \rho_t &= \Pc\Lc\Pc \rho_t + \Pc\Lc \Mc_t^{-1}e^{\Qc\Lc\Qc t} \Qc\rho_0 \\& \qquad\qquad\qquad\qquad+ \Pc\Lc (\Mc_t^{-1}-\Ic) \Pc \rho_t\\ &= \Pc\Lc \Mc_t^{-1}e^{\Qc\Lc\Qc t} \Qc\rho_0 + \Pc\Lc \Mc_t^{-1} \Pc \rho_t.
-\end{align*}
-Note that under the assumptions that $\Pc\rho_0=\rho_0$ we have that $\Qc\rho_0=0$ and thus the equation gets simplified to 
-\[\frac{d}{dt}\Pc \rho_t = \underbrace{\Pc\Lc \Mc_t^{-1} \Pc}_{\equiv\Kc_t} \rho_t\]
-which gets simplified to 
+\[\Mc_t \Qc\rho_t = e^{\Qc\Lc\Qc t} \Qc\rho_0 + (\Ic-\Mc_t) \Pc \rho_t.\]
+If we then assume that $\Mc_t$ is invertible we obtain 
+\[\Qc\rho_t = \Mc_t^{-1}e^{\Qc\Lc\Qc t} \Qc\rho_0 + (\Mc_t^{-1} -\Ic) \Pc \rho_t.\]
+Substituting this in Eq. \eqref{eq:P_rho_t} we obtain 
+\begin{align}
+    \frac{d}{dt}\Pc \rho_t &= \Pc\Lc\Pc \rho_t + \Pc\Lc \Mc_t^{-1}e^{\Qc\Lc\Qc t} \Qc\rho_0 \nonumber \\& \qquad\qquad\qquad\qquad+ \Pc\Lc (\Mc_t^{-1}-\Ic) \Pc \rho_t \nonumber\\ &= \Pc\Lc \Mc_t^{-1}e^{\Qc\Lc\Qc t} \Qc\rho_0 + \Pc\Lc \Mc_t^{-1} \Pc \rho_t.
+    \label{eq:TCL_ME}
+\end{align}
+Note that under the assumptions that $\Pc\rho_0=\rho_0$ we have that $\Qc\rho_0=0$ and thus Eq. \eqref{eq:TCL_ME} gets simplified to 
 \begin{equation}
-    \frac{d}{dt}\eta_t = \underbrace{\Rc \Lc \Mc_t^{-1} \Jc}_{\equiv\Fc_t} \eta_t
+  \frac{d}{dt}\Pc \rho_t = \underbrace{\Pc\Lc \Mc_t^{-1} \Pc}_{\equiv\Kc_t} \rho_t  
+  \label{eq:tcl_me_no_affine}
 \end{equation}
-when separating the Projector $\Pc$ into its factors $\Rc = \Jc\Rc$.
+which, separating the Projector $\Pc$ into its factors $\Rc = \Jc\Rc$, gets simplified to 
+\begin{equation}
+    \frac{d}{dt}\eta_t = \underbrace{\Rc \Lc \Mc_t^{-1} \Jc}_{\equiv\Fc_t} \eta_t.
+    \label{eq:tcl_me_reduced}
+\end{equation}
 
-Note that, in order to compute $\Fc_t$ (or equivalently $\Kc_t$) one needs to first compute the integral that defines $\Mc_t$ and then to compute the inverse of $\Mc_t$. Both these tasks are numerically challenging. 
+A few comments on this solution are in order: i) The invertibility of $\Mc_t$ needs to be verified and tipically only holds fot small $t$, see e.g. \cite{breuer2002theory}. ii)
+Note that, in order to compute $\Fc_t$ (or equivalently $\Kc_t$) one needs to first compute the integral that defines $\Mc_t$ and then to compute the inverse of $\Mc_t$. Both these tasks are challenging (numerically and analytically) and it is generally considered that solving this integral and inverse is as difficult as solving the original model \eqref{eq:original_model}, see e.g. \cite{breuer2007}. Nevertheless, Eq. \eqref{eq:TCL_ME} provides an excellent starting point to compute an approximation of the reduced evolution. 
 
-To circumvent these numerical issues, $\Kc_t$ is typically approximated by expanding it as ordered cumulants \cite{breuer2002theory,breuer2006,nestmann2019time}:
+To circumvent these numerical issues, $\Kc_t$ is typically approximated by expanding it as an expansion in the coupling strength $\varepsilon$ and by computing the terms of the expansion as ordered cumulants \cite{breuer2002theory,breuer2006,nestmann2019time}.
+In the typical setting, the system is considered to be bipartite, i.e. $\Hc=\Hc_S\otimes\Hc_B$ and the dynamics purely Hamiltonian, i.e. $\Lc(\rho)=-i[H,\rho]$ with Hamiltonian $H = H_0 + \varepsilon V$ where $H_0$ is the free Hamiltonian of the system and bath, $V$ is the interaction Hamiltonian and $\varepsilon$ is the coupling strength.
+Under these assumptions, The time dependent generator $\Kc_t$ is expressed as 
 \begin{align*}
     \Kc_t = \sum_{n=1}^\infty \Kc_n(t)
 \end{align*}
@@ -165,15 +184,14 @@ where
     \Kc_n(t) &= \int_{0}^t dt_1 \int_0^{t_1} dt_2 \dots \int_0^{t_{n-2}}dt_{n-1}\\
     &\qquad \times \sum_q (-1)^q \Pc \Lc_{t} \dots \Lc_{t_i}\Pc\Lc_{t_j}\dots\Lc_{t_k}\Pc\dots\Pc
 \end{align*}
-where $\Lc_t$ is typically a time-dependent generator as the dynamics is often written in interaction picture. \TG{[Expand and study this better.]}
+where $\Lc_t = -i[H(t),t]$ and $H(t)$ is the Hamiltonian in rotating frame with respect to $H_0$. The series is then approximated by stopping at a given order $N$, i.e. $\Kc_t\approx\sum_{n=1}^N\Kc_n(t)$.
 
-\TG{[Describe the drawbacks of this approach.]}
-
-
+In many cases of interest this approximation of the TCL-ME provides a good approximation of the open quantum system dynamics, both in the  long-time and short-time regime. It is however important to note that there is no guarantee that such an approximation holds also for long times. As an example of this, see \cite{breuer2007} where it is shown that TCL2 and TCL4 (approximations with $N=2,4$) do not approximate the true dynamics in the long time regime.   
 
 \section{Polynomial approximations of the time-dependent generator}
+\label{sec:time_ordered}
 
-This work leverages a key assumption: I assume that the time dependent generator $\Fc_t$ is polynomial in $t$, i.e. $\Fc_{t,N} \equiv \sum_{k=0}^N t^k \Fc_{(k+1)}$. This assumption is clearly restrictive, but it greatly simplifies the computation of the time-ordered exponential $\Tb e^{\int_0^t \Fc_{s,N} ds}$ as shown in the next key result. 
+This work leverages a key assumption: we assume that the time dependent generator $\Fc_t$ is polynomial in $t$, i.e. $\Fc_{t,N} \equiv \sum_{k=0}^N t^k \Fc_{(k+1)}$. This assumption is clearly restrictive, but it greatly simplifies the computation of the time-ordered exponential $\Tb e^{\int_0^t \Fc_{s,N} ds}$ as shown in the next key result. 
 \begin{theorem}
 \label{thm:time_ordered_expansion}
     Let us assume that \(\Fc_{t,N} = \sum_{k=0}^{N} t^k \Fc_{(k+1)}\). 
@@ -193,8 +211,7 @@ Proof of this result and an explanatory example are given in Appendix \ref{sec:t
 
 Note that Eq. \eqref{eqn:E_k} provides a closed formula for the coefficients $\Ec_{(k)}$ of the expansion of $\Tb e^{\int_0^t \Fc_{s,N} ds}$ as a function of the coefficients $\Fc_{(k)}$. Furthermore, only the terms $\{\Ec_{(\ell)}\}_{\ell=1}^{k-1}$ appear in Eq. \eqref{eqn:E_k}, which means that this equation can be used iteratively to compute each term $\Ec_{(k)}$. 
 
-Theorem \ref{thm:time_ordered_expansion} provides the main intuition on how to construct the polynomial time dependent generator $\Fc_{t,N}$: Eq. \eqref{eqn:time_ordered_expansion} provides an expansion for $\Tb e^{\int_0^t \Fc_{s,N} ds}$ in the time variable $t$. We can then expand $e^{t\Lc}$ in $t$ and construct $\Fc_{(k)}$ so that the terms of $\Tb e^{\int_0^t \Fc_{s,N} ds}$ match the terms of $\Rc e^{t\Lc} \Jc$ by orders of $t$, similarly to the procedure used in \cite{adiabadic-elimination}. 
-The main result of this work, which summarizes the result of this procedure is stated next.
+Theorem \ref{thm:time_ordered_expansion} provides the main intuition on how to construct the polynomial time dependent generator $\Fc_{t,N}$: Eq. \eqref{eqn:time_ordered_expansion} provides an expansion for $\Tb e^{\int_0^t \Fc_{s,N} ds}$ in the time variable $t$. We can then expand $e^{t\Lc}$ in $t$ and construct $\Fc_{(k)}$ so that the terms of $\Tb e^{\int_0^t \Fc_{s,N} ds}$ match the terms of $\Rc e^{t\Lc} \Jc$ by orders of $t$, similarly to the procedure used in \cite{adiabadic-elimination}. The resulting procedure, which represents the main contribution of this work, is stated next.
 \begin{theorem}
 \label{thm:approx}
 Let us define 
@@ -213,8 +230,10 @@ Then:
 \label{eqn:time_approx}
 \end{align}
 \end{theorem}
-Before proceeding to prove this result we shall observe a few key aspects. First, it is important to notice that the right-hand side of equation \eqref{eqn:F_k} depends on $\Rc\Lc^{k}\Jc$ and $\{\Fc_{(s)}\}_{s=1}^{k-1}$. This means that equation \eqref{eqn:F_k} can be used iteratively to construct the terms $\Fc_{(k)}$ starting from $k=1$ and growing up to $k=N$. 
-For the reader's convenience we write here the first few terms of the series:
+Before proceeding to prove this result we shall observe a few key aspects. 
+First, Eq. \eqref{eqn:time_approx} finally gives sense to the approximation symbol $\approx$ used in Sec. \ref{sec:problem_setting} i.e. an approximation of the type $O(t^{N+1})$. This implies that the approximation holds only for small times. 
+Second, it is important to notice that the right-hand side of equation \eqref{eqn:F_k} depends on $\Rc\Lc^{k}\Jc$ and $\{\Fc_{(s)}\}_{s=1}^{k-1}$. This means that equation \eqref{eqn:F_k} can be used iteratively to construct the terms $\Fc_{(k)}$ starting from $k=1$ and growing up to $k=N$. 
+For the reader's convenience the first few terms of the series are reported next:
 \begin{align*}
     \Fc_{(1)} &= \Rc\Lc\Jc\\
     \Fc_{(2)} &= \Rc\Lc^2\Jc - \Fc_{(1)}\Rc\Lc\Jc = \Rc\Lc^2\Jc - (\Rc\Lc\Jc)^2\\
@@ -223,10 +242,8 @@ For the reader's convenience we write here the first few terms of the series:
 \end{align*}
 It is interesting to notice a couple of points about the first few terms: i) As one would expect, the term of order one $\Fc_{(1)}$ coincides with the reduction of the original dynamics which is often used as rough time-independent approximation of the reduced evolution \TG{[CITE]}; ii) The second order term does not only contain the reduction of the generator squared $\Rc\Lc^2\Jc$ but also contains a correction term depends on the first order term $\Fc_{(1)}$.  
 
-Second, Eq. \eqref{eqn:time_approx} finally gives sense to the approximation symbol $\approx$ used in Sec. \ref{sec:problem_setting} i.e. an approximation of the type $O(t^{N+1})$. This implies that the approximation holds only for small times. 
-
 We are finally ready to prove Theorem \ref{thm:approx}.
-\begin{proof}
+\begin{proof}[Proof of Theorem \ref{thm:approx}]
 First of all we can use Theorem \ref{thm:time_ordered_expansion} to write 
 \[\Tb e^{\int_0^t \Fc_{s,N} ds} = \sum_{f=0}^{+\infty} t^k \Ec_{(k)}\]
 where \(\Ec_{(k)} =  \frac{1}{k} \sum_{s=1}^{k} \Fc_{(s)}\Ec_{(k-s)}= \frac{1}{k}\sum_{h=0}^{k-1} \Fc_{(k-h)}\Ec_{(h)}\) and where we reversed the order of the summation by imposing $h=k-s$. We next prove that, for $1\leq k \leq N$, we have $\Ec_{(k)}=\frac{\Rc\Lc^k\Jc}{k!}$ by induction. The case $k=1$ is trivial as $\Ec_{(1)} = \Fc_{(1)}\Ec_{(0)} = \Rc \Lc \Jc$. Let then assume that $\Ec_{(h)} = \frac{\Rc\Lc^h\Jc}{h!}$ for all $h<k$ and let us prove that $\Ec_{(k)}=\frac{\Rc \Lc^k \Jc}{k!}$. Then
@@ -256,15 +273,15 @@ which concludes the proof.
 
 \subsection{Connection with the literature}
 
-While the results I just presented have been derived independently, it shall be noted that a recursive formula similar to \eqref{eqn:F_k} have previously been proposed in the literature. Specifically \cite[Eq. (38)]{nestmann2019time} provides a recursive formula, similar to \eqref{eqn:F_k} for the terms of a Dyson expansion for the time-dependent generator $\Fc_t$. That formula however was derived starting from an initial time-dependent model and thus the terms of the recursive formula contain time-ordered integrals that need to be solved in order to compute the terms of the expansion. Because in this work I start from a time-independent model, Eq. \eqref{eqn:F_k} does not contain time-ordered integrals, resulting in overall simpler computations.
+While Eq. \eqref{eqn:F_k} has been derived independently, it shall be noted that a quite similar recursive formula is known in in the literature. Specifically \cite[Eq. (38)]{nestmann2019time} (but also \cite[Eq. (2)]{cerrillo2014non} \cite[Eq. (2)]{cygorek2025timenonlocalversustimelocallongtime}, \cite[Eq. (16)]{gasbarri2018recursive}) provides a recursive formula, similar to \eqref{eqn:F_k} for the terms of a Dyson expansion for the time-dependent generator $\Fc_t$. That formula however was derived starting from an initial time-dependent model and thus the terms of the recursive formula contain time-ordered integrals that need to be solved in order to compute the terms of the expansion. Because in this work we start from a time-independent model, Eq. \eqref{eqn:F_k} does not contain time-ordered integrals, resulting in overall simpler computations.
 
-\TG{Other works in the literature have similar recursive formulas: Specifically, \cite[Eq. (2)]{cerrillo2014non} \cite[Eq. (2)]{cygorek2025timenonlocalversustimelocallongtime}, \cite[Eq. (16)]{gasbarri2018recursive}}
+Another aspect that separates this work from most of the literature, e.g. \cite{colla2025unveiling,colla2025recursive,Tokieda_2025} is the fact that instead of expanding in a power-series of a perturbation parameter $\varepsilon$ (which typically represents the coupling strength between system and environment) here we expand in the time variable $t$. This fact simplifies the calculations and lifts the weak-coupling assumption that is typically introduced but comes at a cost: the approximate model holds only for small times.
 
-Another aspect that separates this work from most of the literature, e.g. \cite{colla2025unveiling,colla2025recursive,Tokieda_2025} is the fact that instead of expanding in a power-series of a perturbation parameter $\lambda$ or $\varepsilon$ that typically describes the coupling coefficient, here we expand in the time variable $t$. This fact simplifies the calculations and lifts the weak-coupling assumption that is typically introduced but comes at a cost: the approximate model holds only for small times.
-This aspect however is not limiting as these reduced models are typically considered to hold only for small times. \TG{Argument better.}
+While this consequence is clearly limiting, this situation is comparable to the classical derivation of TCL ME as these also hold for small times. \TG{Argument better.}
 
 
 \section{Complete Positivity of the approximate model at first and second order}
+\label{sec:cptp_second_order}
 
 In this section we focus on the complete positivity of the reduced dynamics.
 
@@ -399,8 +416,13 @@ Note that in deriving the reduced generator $\Fc_{t,2}$ there was no need to mov
 
 \section{Applications of interest}
 \label{sec:applications}
+In this section we consider a few examples of interest:\\ 
+I) The first example is a classical linear model whose dynamics we want to project onto a subspace and showcases that the results derived in Sec. \ref{sec:time_ordered} do not only hold for quantum systems. \\
+II) The second example considers a qubit coupled to a bosonic bath. As the exact solution of such a model is well known, this example allows us to assess the goodness of the approximation proposed in this work. \\
+III) Third, a qubit coupled to a finite bath is studied. Given the fact that the bath is finite-dimensional this is typically considered an ``highly non-Markovian model''. This example allows us to showcase the numerical procedure at higher orders for both a case where the original dynamics is purely Hamiltonian and a case where a dissipative term is included. \\
+IV) Lastly an Ising spin chain is studied. This example allows us to showcase that the proposed procedure works in cases that are more general than the bipartite case and allows us to show that a non-Markovian reduced model can be obtained also for the population of the state (and not only for the bipartite case).
 
-The code necessary to reproduce the numerical experiment is available at \cite{Myrepo}.
+The code necessary to reproduce all the numerical experiment presented next is available at \cite{Myrepo}.
 
 \subsection{Linear testbed}
 \label{sec:linear_testbed}
@@ -413,18 +435,20 @@ This ensures that $\Lc$ is simply stable and has operator norm $\norm{\Lc}_{op}=
 
 The projector $\Pc$ is then constructed through $\Rc = \left[\begin{array}{c|c} \one_{m\times m} & 0_{m\times n-m} \end{array}\right]$ and $\Jc = \Rc^\dag$ to obtain \[\Pc = \left[\begin{array}{c|c} \one_{m\times m} & 0_{m\times n-m} \\\hline 0_{m \times n-m } & 0_{n-m\times n-m} \end{array}\right].\]
 
-By using Eq. \eqref{eqn:F_k} we can then compute the terms $\Fc_{(k)}$ iteratively for $k=1,\dots,N$. Fig. \ref{fig:norm_bound} (left) shows both the Hilbert-Schmidt and operator norm of the terms $\Fc_{(k)}$ for $k=1,20$. Interestingly, the Hilbert-Schmidt norm, $\norm{\Fc_{(k)}}_{HS}$, is bounded by $\frac{\norm{\Lc}_{HS}^k}{k!}$, indicating that the series $\Fc_{t,N}$ should be converging for $N\to\infty$. \TG{Curiously, the same does not hold for the operator norm.}
+By using Eq. \eqref{eqn:F_k} we can then compute the terms $\Fc_{(k)}$ iteratively for $k=1,\dots,N$. Fig. \ref{fig:norm_bound} (left) shows both the Hilbert-Schmidt and operator norm of the terms $\Fc_{(k)}$ for $k=1,20$. Interestingly, the Hilbert-Schmidt norm, $\norm{\Fc_{(k)}}_{HS}$, is bounded by $\frac{\norm{\Lc}_{HS}^k}{k!}$, indicating that the series $\Fc_{t,N}$ should be converging for $N\to\infty$. Curiously, the same does not hold for the operator norm.
 Fig. \ref{fig:norm_bound} (right) instead shows the norm of the terms $\Ec_{(k)}$ where we fixed $N=20$ and $\Fc_{(k)}=0$ $\forall k>20$. Interestingly for $k\leq N$ $\norm{\Ec_{(k)}}$ is bounded by $\frac{\norm{\Lc}^k}{k!}$ while for $k>N$ this is no longer the case.  
 
 \begin{figure}[th]
     \centering
     \includegraphics[width=\linewidth]{error_linear.pdf}
-    \caption{Error norm between the exact reduced evolution $\eta_t$ and the approximated reduced evolution $\mu_t$ for different values of the approximation order $N$. The dotted curves represent a curve-fit for the function $\alpha t^{N+1}$ for different values of $N$. }
+    \caption{Error norm between the exact reduced evolution $\eta_t$ and the approximated reduced evolution $\mu_t$ for different values of the approximation order $N$. The dashed curves represent an approximation obtained by truncating the Taylor expansion of the exponential for different values of the truncation order $N$. }
     \label{fig:error_linear}
 \end{figure}
 
 Fig. \ref{fig:error_linear} shows the error norm $\norm{\eta_t-\mu_t}_2$ versus time. In this simulation $\eta_t$ was simulated by reducing the original model, i.e. $\eta_t= \Rc e^{\Lc t}\rho_0$ while $\mu_t$ is obtained by simulating the time-dependent linear differential equation $\dot{\mu}_t=\Fc_{t,N}\mu_t$, for different values of $N$, by using an approximation of the equation given in Theorem \ref{thm:time_ordered_expansion}, i.e. \(\Tb e^{\int_0^t \Fc_{s,N} ds} \approx \sum_{k=0}^{100} t^k \Ec_{(k)}\).  
-One can note that increasing the degree of approximation $N$ decreases the error committed by the approximated model. %Furthermore, by the curve-fit we can note that the error evolves approximately with $t^{N}$ indicating that the error indeed scales as $O(t^{N+1})$ as stated in Theorem \ref{thm:approx}.  
+One can note that increasing the degree of approximation $N$ decreases the error committed by the approximated model. 
+
+A natural alternative numerical approximation that comes to mind is given by truncating the exponential expansion at a given order $N$, i.e. $\eta_t\approx \sum_{k=0}^{N} \frac{t^k}{k!} \Rc \Lc^k \Jc \mu_0$. Note that such an approximation has numerical complexity almost identical to that of the approximation proposed in this work as in both cases one need to compute $\Lc^N$. Furthermore, from a theoretical standpoint, both cases commit an error of the order of $O(t^{N+1})$. To test this fact numerically, in Fig. \ref{fig:error_linear} we included the actual error committed by these two approximations at the same orders of approximation: the continuous line denotes the error committed by the procedure proposed here while the dashed line is the error committed by the truncation of the exponential. One can observe that for lower orders ($N=1,2,5$) the procedure proposed here yields better results, while at higher orders this is not the case. 
 
 \subsection{Dephasing spin boson model}
 \label{sec:spin_boson}
@@ -514,9 +538,6 @@ In Fig. \ref{fig:dephasing_spin_boson} the results of the simulations are shown 
 Importantly, one can observe in Fig. \ref{fig:dephasing_spin_boson} Right that, in each of the three cases, the error committed by the second order approximation, Eq. \eqref{eq:time_ordered_boson} is below that of the coarse-grained dynamics, Eq. \eqref{eq:coarse_grained_boson} for both the initial and final phases while it is above for a central phase.     
 
 \TG{This indicates that the second order approximation performs better than the coarse-grained Markovian approximation in this case.}
-
-\subsection{Highly non-Markovian model}
-\TG{\cite{breuer2006,breuer2007,gemmer2005thermalization, Riera2021}}
 
 \subsection{Dissipative central spin model}
 \label{sec:central_spin}
@@ -633,7 +654,9 @@ Outlook:
 The code necessary to reproduce all the numerical experiments presented in this work is available at \cite{Myrepo}. 
 
 \section{Acknowledgments}
-The author would like to thank Francesco Ticozzi for his contribution in the primordial idea of this work and for his constant support. The author would also like to thank Lorenza Viola, Michiel Burgelman and Augusto Ferrante for the useful discussions on the matters of this work. 
+The author would like to thank Francesco Ticozzi for his contribution in the primordial idea of this work and for his constant support. The author would also like to thank Lorenza Viola, Michiel Burgelman, Augusto Ferrante and Giacomo Baggio for the useful discussions on the matters of this work. 
+
+The author has been supported by the Italian Ministry of University and Research under the PRIN project “Extracting essential information and dynamics from complex networks”, grant no. 2022MBC2EZ.
 
 \bibliography{ref}
 
