@@ -1,5 +1,6 @@
 \documentclass[10pt,aps,pra,twocolumn,showpacs,superscriptaddress,nobalancelastpage,notitlepage,nofootinbib,longbibliography]{revtex4-2}
 
+
 %\bibliographystyle{apsrev4-2-titles}
 \bibliographystyle{ieeetr}
 \input{header}
@@ -45,24 +46,34 @@
 \date{\today}
 
 \begin{abstract}
-    In this work we propose a novel numerical method to compute an approximation of the time-convolutionless master equation by leveraging a series expansion in time. The proposed method is tested against prototypical models of interest including a dephasing spin-boson model a central spin model and an Ising spin chain. 
+    The ability to derive time-convolutionless master equations is fundamental to study open quantum systems efficiently. In this work we propose a novel alternative method to compute an approximation of the time-convolutionless master equation. The proposed approximation is polynomial in the time variable and the derivation is based on the Taylor expansion of the exponential map and a novel result on the computation of the time-ordered exponential for time-dependent generators that are polynomial in time. The resulting generator  approximate the exact evolution for small times, does not require a weak coupling assumption and is guaranteed to provide a CPTP semigroup at the lowest orders. Importantly, the coefficients of the polynomial can be computed through a recursive formula which numerically gives easy access to higher order approximations. The proposed method is tested against prototypical models of interest including a dephasing spin-boson model a central spin model and an Ising spin chain. 
 \end{abstract}
 
 \maketitle
 
 \section{Introduction}
 
+To obtain realistic models of quantum systems, one shall consider the effects that the interaction between the system and its environment have on the evolution of the system. Such an interaction generates important behaviors such as dissipation and dephasing. Modelling these effects precisely is thus a mandatory task to study open quantum systems \cite{breuer2002theory}. Unfortunately, modelling the entire system is only doable in theory as the scaling of the Hilbert space prohibits any simulation or analysis of the joint system--environment even for small sizes of the environment. This fact implies that in order to study the effect of the coupling with the environment, one needs to resort to reduce the model and aim for an approximate description of the system that hopefully captures the interesting features of the original model.
+
+A common method to reduce the joint system-environment model is known in the physics literature with the name of time-convolutionless master equations (TCL ME) \cite{shibata_generalized_1977,chaturvedi_time-convolutionless_1979}. Such a method aims at obtaining a linear time-varying model (LTV) that replicates the effects of the environment by leveraging an expansion in the strenght of the coupling between the system and environment, which is typically assumed to be small. For more details see e.g. \cite{breuer2002theory} and references therein. 
+
+In this work we propose an alternative method to derive a similar approximation. In particular we lift the assumption of having a weak coupling between the system and its environment and perform an expansion in the time variable $t$. This allows us to derive a reduced model that is time-varying but only polynomial in $t$. Under these assumptions we are able to propose a recursive formula for the coefficients of the polynomial generator that offers an approximation whose error scale as $O(t^N)$ where $N$ is the order of the polynomial. 
+
+Importantly, we are able to prove that, in the common case of purely Hamiltonian evolution, the reduced polynomial generator at first and second order is in Lindblad form for all times $t$.  
+
+While the idea of approximating a large model with a smaller one that is LTV is common in the setting of a bipartite system-environment couple, this is far from the only case where such an approach is useful. More in general, the same approaches could be adapted to cases where one wants to describe the evolution of only a small set of variables of interest of the original model. For this reason, in Sec. \ref{sec:problem_setting} we generalize the typical framework to include general completely positive and trace preserving (CPTP) projectors (not only those in the bipartite form $\Pc(\cdot) = \tr_B(\cdot)\otimes\rho_B$) and in Sec. \ref{sec:ising_model} we showcase the use of this generalization.     
+
+It is important to point out that the method proposed in this work is not intended to substitute the perturbative approach at deriving the  TCL ME \cite{shibata_generalized_1977,chaturvedi_time-convolutionless_1979} but rather to provide an alternative that can be of use whenever the main assumptions of the standard method do not hold, e.g. in the strong coupling regime or whenever the time-ordered integrals are difficult to assess. 
+
 For the reader's convenience we next summarize the main contributions of this work:  
 \begin{itemize}
-    \item In Sec. \label{sec:time_ordered} we propose a novel numerical method to compute an approximate version of the time-convolutionless master equation. Throughout the paper we highlight both the strengths and weaknesses of the proposed approximation procedure. Namely: the proposed procedure is simpler (numerically and analitically) than the alternatives, allows for an initial model that is in Lindblad form (not only purely Hamiltonian) and does not rely on a weak coupling assumption hence it allows to study systems even in strong coupling regimes. On the other hand the proposed reduction procedure relies on an expansion in time and thus provides a good approximation only for small times. While this aspect is limiting, similar restriction also hold in the well known approximations of the time-convolutionless master equation proposed by \cite{shibata_generalized_1977}.
-    \item In Sec. \ref{sec:cptp_second_order} we prove that, when the original dynamics is purely Hamiltonian, the proposed first and second order approximation provide a CPTP (two-parameter) semigroup.
+    \item In Sec. \ref{sec:time_ordered} we propose the polynomial approximation of the time-convolutionless master equation and discuss the recursive equation that determines the coefficients of the polynomial. Furthermore, we connect the recursive formula we obtain with other quite similar recursive equations known in the literature \cite{nestmann2019time,cerrillo2014non,cygorek2025timenonlocalversustimelocallongtime,gasbarri2018recursive} and discuss how the expansion in $t$ greatly simplifies the associated calculations. 
+    \item In Sec. \ref{sec:cptp_second_order} we leverage a few recent results \cite{grigoletto2024exact,grigoletto2025quantummodelreductioncontinuoustime} to prove that, when the original dynamics is purely Hamiltonian the proposed approximation at first and second order provides a CPTP (two-parameter) semi-group.
     \item In Sec. \ref{sec:applications} we test the proposed procedure on several prototypical examples including: a ``classical'' linear model, a dephasing spin boson model, a central spin model and and Ising spin chain. 
 \end{itemize}
+Throughout the paper we include pedagogical examples that intutively explain the most involved proofs and highlight both the strengths and weaknesses of the proposed approximation procedure, namely: the proposed procedure leverages a recursive formula to compute the terms of the generators at different orders making the procedure numerically easier to access at higher orders than the alternatives; allows for an initial model that is in Lindblad form (not only purely Hamiltonian); does not require the model to be put in rotating frame; and does not rely on a weak coupling assumption hence it allows to study systems even in strong coupling regimes. On the other hand, the proposed reduction procedure relies on an expansion in time and thus provides a good approximation only for small times. While this aspect is limiting, similar restriction also hold in the well known approximations of the time-convolutionless master equation proposed by \cite{shibata_generalized_1977}.
 
-It is important to point out that the method proposed in this work is not intended to substitute the perturbative approach at deriving the time- convolutionless master equation (TCL ME) but rather to provide an alternative that can be of use whenever the main assumptions of the standard method do not hold, e.g. in the strong coupling regime. 
-
-
-\section{Problem setting and known result}
+\section{Problem setting and connection with the literature}
 \label{sec:problem_setting}
 \subsection{Problem setting}
 
@@ -77,12 +88,13 @@ where $\rho_0\in\Df(\Hc)$ is the system's initial condition, and $\Lc$ is the ce
     \Lc(\rho) = -i[H,\rho] + \sum_k\Dc_{L_k}(\rho)
     \label{eqn:lindblad_generator}
 \end{equation}
-where $H=H^\dag$ is the system's Hamiltonian and $\Dc_L(\rho) = L\rho L^\dag - \um\{L^\dag L, \rho\}$ represents the system's dissipation toward a Markovian environment represented by a set of operators $\{L_k\}$ called noise operators. The evolution of the quantum system is then described by the exponential map $\rho_t = e^{\Lc t}(\rho_0)$. Importantly, $e^{\Lc t}$ generates a quantum dynamical semigroup, i.e. a one-parameter semigroup of completely positive (CP) and trace preserving maps (TP).
+where $H=H^\dag$ is the system's Hamiltonian and $\Dc_L(\rho) = L\rho L^\dag - \um\{L^\dag L, \rho\}$ represents the system's dissipation toward a Markovian environment represented by a set of operators $\{L_k\}$ called noise operators. The evolution of the quantum system is then described by the exponential map $\rho_t = e^{\Lc t}(\rho_0)$. Importantly, $e^{\Lc t}$ generates a quantum dynamical semigroup, i.e. $\{\Lambda_t \equiv e^{\Lc t}\}_{t\geq 0}$ a one-parameter semigroup of completely positive (CP) and trace preserving maps (TP) also known as Markovian dynamics.
 In the following we will say that a super-operator is of \textit{Lindblad-type} if it can be put in the form of Eq. \eqref{eqn:lindblad_generator}.
 
-Note that, while physically the most natural setting is the Hamiltonian one, i.e. $\Lc(\cdot)=-i[H,\cdot]$, mathematically there is no need to restrict to this case. For this reason, in this work, we start with the general assumption that $\Lc$ is a generator of Lindblad form and then focus on the Hamiltonian case when necessary.
+Note that typically, in the derivation of TCL ME \cite{shibata_generalized_1977,chaturvedi_time-convolutionless_1979}, the initial ‘‘big'' model is considered to be Hamiltonian, i.e. $\Lc(\cdot)=-i[H,\cdot]$. However, mathematically, there is no reason to restrict to this case hence, in this work, we start with the general assumption that $\Lc$ is a generator of Lindblad form and then focus on the Hamiltonian case when necessary.
 
-Next, assume to be given a CPTP, not necessarily orthogonal (w.r.t. $\inner{\cdot}{\cdot}_{HS}$), projector $\Pc:\Bf(\Hc)\to\Bf(\Hc)$, $\Pc^2=\Pc$, whose image will be denoted by $\Vs \equiv {\rm Im}\Pc$. This provides a generalization to the superoperator projector setting considered by \cite{breuer2006,breuer2007}.  Furthermore, for the sake of simplicity, I assume that $\Pc$ admits a full rank fixed point, i.e. $\exists\rho\in\Df(\Hc)$, $\rho>0$ such that $\Pc(\rho)=\rho$. 
+
+Next, assume to be given a CPTP, not necessarily orthogonal (w.r.t. $\inner{\cdot}{\cdot}_{HS}$), projector $\Pc:\Bf(\Hc)\to\Bf(\Hc)$, $\Pc^2=\Pc$, whose image will be denoted by $\Vs \equiv {\rm Im}\Pc$. This provides a generalization to the superoperator projector setting considered by \cite{breuer2006,breuer2007}.  Furthermore, for the sake of simplicity, we shall assume that $\Pc$ admits a full rank fixed point, i.e. $\exists\rho\in\Df(\Hc)$, $\rho>0$ such that $\Pc(\rho)=\rho$. 
 As we shall see in more details later (in Sec.\ref{sec:cptp_first_order}) such a projector is in fact a conditional expectation and enjoys some useful properties. For the moment however, it is sufficient to know that $\Pc$ can be decomposed in two factors $\Pc = \Jc\Rc$ which take the name of reduction and injection maps $\Rc:\Bf(\Hc)\to\Bf(\Kc)$ and $\Jc:\Bf(\Kc)\to\Bf(\Hc)$ such that $\Rc\Jc = \Ic_\Kc$ and ${\rm Im}\Jc = \Vs$ ${\rm Im}\Rc=\As$ and where $\As\subseteq\Bf(\Kc)$ is a $*$-subalgebra of $\Bf(\Kc)$ for some Hilbert space $\Kc$, $\dim(\Kc)\leq\dim(\Hc)$.
 For later convenience we shall also define the projector $\Qc\equiv \Ic-\Pc$. Note that neither $\Pc$ or $\Qc$ need to be orthogonal, i.e. self adjoint.
 
@@ -97,7 +109,7 @@ The evolution of the reduced state is then given by
 \begin{align*}
     \eta_t = \Rc e^{\Lc t} (\rho_0) = \Rc e^{\Lc t}\Jc (\eta_0) + \Rc e^{\Lc t}\Qc (\rho_0).
 \end{align*}
-We next introduce an important simplifying assumption that will hold throughout the rest of the paper and that it is often assumed in similar situations, see e.g. \cite{breuer2002theory}
+We next introduce a simplifying assumption that will hold throughout the rest of the paper and that it is often assumed in similar situations, see e.g. \cite{breuer2002theory}.
 \begin{assumption}
     \label{ass:proj}
     We assume that $\Pc(\rho_0)=\rho_0$.
@@ -114,11 +126,11 @@ To that aim, let us define a density operator $\mu_t\in\Df(\Hc)$ whose evolution
     \dot{\mu}_t = \Fc_t (\mu_t)\\ \mu_0 = \eta_0
 \end{cases}
 \end{equation}
-and where $\Fc_t$ is a time-dependent generator. 
-Our aim is then to construct $\Fc_t$ so that $\mu_t\approx\eta_t$. In other words we want to determine $\Fc_t$ so that \[\Tb e^{\int_0^t \Fc_s ds} \approx \Rc e^{\Lc t} \Jc\] where $\Tb$ denotes the time-ordering operator. The sense in which the approximation $\approx$ is intended shall be defined later.
+and where $\Fc_t$ is a time-dependent generator. The evolution of such an LTV model is given by the two parameter semigroup $\{\Upsilon_t \equiv \Tb e^{\int_0^t \Fc_s ds} \}_{t\geq0}$, where $\Tb$ denotes the time-ordering operator, for which the composition rule $\Upsilon_{t,0}=\Upsilon_{t,s}\Upsilon_{s,0}$ for all $0\leq s\leq t$ holds. \TG{Note that in this case the Markov composition property is lost and thus such a semigroup is typically referred to as non-Markovian in the control engineering literature while takes the name of time-dependent Markovian in the physics literature \cite{wolf2008dividing}. [Not sure I want to discuss this here.]}
 
-Desirable properties for $\Fc_t$ certainly include the fact that we would like $\Tb e^{\int_0^t \Fc_s ds}$ to be CPTP
-for all $t\geq0$. Note that necessary conditions to impose on $\Fc_t$ so that $\Tb e^{\int_0^t \Fc_s ds}$ is CPTP for all $t\geq0$ are not known \cite{benatti2024quantum}. 
+Our aim is then to construct $\Fc_t$ so that $\mu_t\approx\eta_t$. In other words we want to determine $\Fc_t$ so that \[\Tb e^{\int_0^t \Fc_s ds} \approx \Rc e^{\Lc t} \Jc.\] The sense in which the approximation $\approx$ is intended shall be defined more precisely later on in the paper. A graphical representation of the approximation problem is given in Fig.\,\ref{fig:schematic}.   
+
+Desirable properties for $\Fc_t$ certainly include the fact that we would like the semigroup $\{\Upsilon_t\}_{t\geq0}$ to be a set of CPTP maps for all $t\geq0$. Note that necessary conditions to impose on $\Fc_t$ so that $\Tb e^{\int_0^t \Fc_s ds}$ is CPTP for all $t\geq0$ are not known \cite{benatti2024quantum}. 
 
 \begin{figure}
     \centering
@@ -126,8 +138,6 @@ for all $t\geq0$. Note that necessary conditions to impose on $\Fc_t$ so that $\
     \caption{Graphical representation of the approximation problem. The pale blue plane represents the operator space $\Vs$ onto which $\Pc$ projects. The red curve represents the trajectory of the original model $\rho_t$, which starts in $\Vs$ at $t=0$.  The blue curve represents the projection of the true trajectory $\Pc(\rho_t)$, i.e. the one we want to approximate. Finally, the orange curve represents the approximate evolution we aim to find, i.e. $\Jc(\mu_t)$.}
     \label{fig:schematic}
 \end{figure}
-
-A graphical representation of the approximation problem is given in Fig.\,\ref{fig:schematic}.   
 
 \subsection{Time-convolutionless master equation}
 
@@ -229,6 +239,7 @@ Then:
 \Rc e^{\Lc t}\Jc - \Tb e^{\int_0^t \Fc_{s,N} ds} = O(t^{N+1}).
 \label{eqn:time_approx}
 \end{align}
+\TG{[Check if big O notation is correct here. could I find a better way of expressing this?]}
 \end{theorem}
 Before proceeding to prove this result we shall observe a few key aspects. 
 First, Eq. \eqref{eqn:time_approx} finally gives sense to the approximation symbol $\approx$ used in Sec. \ref{sec:problem_setting} i.e. an approximation of the type $O(t^{N+1})$. This implies that the approximation holds only for small times. 
@@ -379,6 +390,21 @@ and thus
     \Fc_{(2)}(\mu)&=[\Rc \Lc^2 \Jc  - (\Rc\Lc\Jc)^2](\mu) =\\ &=\sum_{j,k} [\chi(\tau)]_{j,k} \left[2S_j \mu S_k -  \{ S_kS_j, \mu\}  \right]
 \end{align*}
 where we defined the matrix $\chi(\tau)$ whose elements are $[\chi(\tau)]_{j,k} \equiv c_{j,k}(\tau)-a_j(\tau)a_k(\tau)$.
+%
+%
+\begin{figure*}[th]
+    \centering
+    \begin{subfigure}{0.48\textwidth}
+        \includegraphics[width=\linewidth]{norm_bound.pdf}
+    \end{subfigure}
+    \begin{subfigure}{0.48\textwidth}
+        \includegraphics[width=\linewidth]{E_norm_bound.pdf}
+    \end{subfigure}
+    \caption{Operator and Hilbert-Schmidt norm of the first 20 $\Fc_{(k)}$ terms (left) and of the first 50 $\Ec_{(k)}$ terms when with $N=20$ (right).}
+    \label{fig:norm_bound}
+\end{figure*}
+%
+%
 One can then notice that the matrix $\chi(\tau)$ coincides with a covariance matrix, i.e. 
 \begin{align*}
     [\chi(\tau)]_{j,k} &= \tr[E_j \tau E_k] - \tr[E_j\tau]\tr[E_k\tau]\\
@@ -402,18 +428,6 @@ is also of Lindblad type at all times $t\geq0$ as proved in Theorem \ref{thm:cpt
 
 Note that in deriving the reduced generator $\Fc_{t,2}$ there was no need to move the system's description into rotating frame. This provides another benefit of the proposed approach. 
 
-\begin{figure*}[th]
-    \centering
-    \begin{subfigure}{0.48\textwidth}
-        \includegraphics[width=\linewidth]{norm_bound.pdf}
-    \end{subfigure}
-    \begin{subfigure}{0.48\textwidth}
-        \includegraphics[width=\linewidth]{E_norm_bound.pdf}
-    \end{subfigure}
-    \caption{Operator and Hilbert-Schmidt norm of the first 20 $\Fc_{(k)}$ terms (left) and of the first 50 $\Ec_{(k)}$ terms when with $N=20$ (right).}
-    \label{fig:norm_bound}
-\end{figure*}
-
 \section{Applications of interest}
 \label{sec:applications}
 In this section we consider a few examples of interest:\\ 
@@ -422,7 +436,7 @@ II) The second example considers a qubit coupled to a bosonic bath. As the exact
 III) Third, a qubit coupled to a finite bath is studied. Given the fact that the bath is finite-dimensional this is typically considered an ``highly non-Markovian model''. This example allows us to showcase the numerical procedure at higher orders for both a case where the original dynamics is purely Hamiltonian and a case where a dissipative term is included. \\
 IV) Lastly an Ising spin chain is studied. This example allows us to showcase that the proposed procedure works in cases that are more general than the bipartite case and allows us to show that a non-Markovian reduced model can be obtained also for the population of the state (and not only for the bipartite case).
 
-The code necessary to reproduce all the numerical experiment presented next is available at \cite{Myrepo}.
+The code necessary to reproduce all the numerical experiments presented next is available at \cite{Myrepo}.
 
 \subsection{Linear testbed}
 \label{sec:linear_testbed}
@@ -450,10 +464,22 @@ One can note that increasing the degree of approximation $N$ decreases the error
 
 A natural alternative numerical approximation that comes to mind is given by truncating the exponential expansion at a given order $N$, i.e. $\eta_t\approx \sum_{k=0}^{N} \frac{t^k}{k!} \Rc \Lc^k \Jc \mu_0$. Note that such an approximation has numerical complexity almost identical to that of the approximation proposed in this work as in both cases one need to compute $\Lc^N$. Furthermore, from a theoretical standpoint, both cases commit an error of the order of $O(t^{N+1})$. To test this fact numerically, in Fig. \ref{fig:error_linear} we included the actual error committed by these two approximations at the same orders of approximation: the continuous line denotes the error committed by the procedure proposed here while the dashed line is the error committed by the truncation of the exponential. One can observe that for lower orders ($N=1,2,5$) the procedure proposed here yields better results, while at higher orders this is not the case. 
 
+\begin{figure*}
+    \centering
+    \begin{subfigure}{0.48\textwidth}
+        \centering
+        \includegraphics[width=\linewidth]{trajectory_spin_boson.pdf}
+    \end{subfigure}
+    \begin{subfigure}{0.48\textwidth}
+        \centering
+        \includegraphics[width=\linewidth]{error_spin_boson.pdf}
+    \end{subfigure}
+    \caption{Simulation of the dephasing spin-boson model for $s=0.5,1,1.5$ where we compare the exact solution $\rho_{S,t}$ given in Eq.\eqref{eq:exact_boson}, the second order approximation $\mu_t$ derived in this work, given in Eq. \eqref{eq:time_ordered_boson} and the coarse-grained dynamics $\tilde{\rho}_{S,t}$ given in Eq. \eqref{eq:coarse_grained_boson}. Left: Evolution of the expectation value $\expect{\sigma_x}$ for the exact solution (continuous curves), second order approximation (dashed curve) and coarse-grained dynamics (dotted curve). The expectations values of the cases $s=0.5,1.5$ have been shifted by $\pm0.5$ respectively for graphical purposes. Right: evolution of the trace-norm error with respect to the exact solution committed by the second order approximation (continuous curve) and coarse-grained dynamics (dashed curve).   }
+    \label{fig:dephasing_spin_boson}
+\end{figure*}
+
 \subsection{Dephasing spin boson model}
 \label{sec:spin_boson}
-
-
 
 Inspired by \cite{lidar2001completely, reina2002decoherence, breuer2002theory, lidar2020lecturenotestheoryopen}, in this section we consider a dephasing spin-boson model to further showcase the advances and drawbacks of the proposed method. Note that: i) in this section we make an exception to the assumption of final dimensional systems considered throughout the paper; ii) the model I am going to consider is exactly solvable hence the intent of this subsection is to showcase that the proposed approximation method provides results comparable to other approximation techniques, not to compare it against the exact solution of the model. 
 Nevertheless, this example helps us to understand the degrees of approximation that the proposed method offers and how the process unfolds.
@@ -507,20 +533,6 @@ Combining both terms we obtain an approximate reduced model descibed by the time
 \end{equation} 
 By comparing this equation with the exact solution of Eq. \eqref{eq:exact_boson} we can observe that both the Hamiltonian and noise operator are correctly recovered whereas the time-dependent dissipation strength $\xi(t)$ is approximated with $\varphi t$. Interestingly, the value $\varphi$ does not coincide with the first order Taylor expansion of $\xi(t)$ which is $\sum_k\alpha_k\omega_k$.
 
-\begin{figure*}
-    \centering
-    \begin{subfigure}{0.48\textwidth}
-        \centering
-        \includegraphics[width=\linewidth]{trajectory_spin_boson.pdf}
-    \end{subfigure}
-    \begin{subfigure}{0.48\textwidth}
-        \centering
-        \includegraphics[width=\linewidth]{error_spin_boson.pdf}
-    \end{subfigure}
-    \caption{Simulation of the dephasing spin-boson model for $s=0.5,1,1.5$ where we compare the exact solution $\rho_{S,t}$ given in Eq.\eqref{eq:exact_boson}, the second order approximation $\mu_t$ derived in this work, given in Eq. \eqref{eq:time_ordered_boson} and the coarse-grained dynamics $\tilde{\rho}_{S,t}$ given in Eq. \eqref{eq:coarse_grained_boson}. Left: Evolution of the expectation value $\expect{\sigma_x}$ for the exact solution (continuous curves), second order approximation (dashed curve) and coarse-grained dynamics (dotted curve). The expectations values of the cases $s=0.5,1.5$ have been shifted by $\pm0.5$ respectively for graphical purposes. Right: evolution of the trace-norm error with respect to the exact solution committed by the second order approximation (continuous curve) and coarse-grained dynamics (dashed curve).   }
-    \label{fig:dephasing_spin_boson}
-\end{figure*}
-
 To better asses the quality of the reduced second order approximation we next compare the evolution of $\rho_{S,t}$ and that of $\mu_t$ with the coarse-grained approximation discussed in \cite[eq. (332)]{lidar2020lecturenotestheoryopen}, i.e. \(\tilde{\rho}_{S,t}\in\Df(\Hc_S)\) and
 \begin{equation}
     \dot{\tilde{\rho}}_{S,t} = -i[H_S,\tilde{\rho}_{S,t}] + \gamma(\tau)\Dc_{\sigma_s}(\tilde{\rho}_{S,t})
@@ -533,21 +545,6 @@ The bath coupling coefficients are going to be defined as $\lambda_k = \sqrt{J(\
     J(\omega) = \Lambda \omega_c^{1-s} \omega^s e^{-\frac{\omega}{\omega_c}}
 \end{equation}
 where $\Lambda\in\Rb_+$ is an overall constant, $\omega_c\in\Rb_+$ is the bath cutoff frequency and $s\in\Rb_+$ is the Ohmicity parameter which determines three cases of interest, i.e. Ohmic ($s=1$), sub-Ohmic($s<1$) and super-Ohmic ($s>1$) \cite{PhysRevB.92.195143}.
-
-In Fig. \ref{fig:dephasing_spin_boson} the results of the simulations are shown in the three cases, i.e. $s=0.5,1,1.5$. The other parameters used in the simulations are $g=1.8$, $\omega_c =0.2$, $\Lambda=0.5$, $\beta=10$, $\tau=32/\omega_c$, and where $\omega_k$ are $N_B=100$, taken equally spaced between $0$ and $1$. The initial state instead has been fixed to $\rho_{S,0}=\mu_0 = \tilde{\rho}_{S,0} = \ketbra{+}{+}$. 
-Importantly, one can observe in Fig. \ref{fig:dephasing_spin_boson} Right that, in each of the three cases, the error committed by the second order approximation, Eq. \eqref{eq:time_ordered_boson} is below that of the coarse-grained dynamics, Eq. \eqref{eq:coarse_grained_boson} for both the initial and final phases while it is above for a central phase.     
-
-\TG{This indicates that the second order approximation performs better than the coarse-grained Markovian approximation in this case.}
-
-\subsection{Dissipative central spin model}
-\label{sec:central_spin}
-
-% \begin{figure}[th]
-%     \centering
-%     \includegraphics[width=.8\linewidth]{central_spin_figure.pdf}
-%     \caption{Graphical representation of the dissipative central spin model.}
-%     \label{fig:central_spin_figure}
-% \end{figure}
 
 \begin{figure*}
     \centering
@@ -576,18 +573,15 @@ Importantly, one can observe in Fig. \ref{fig:dephasing_spin_boson} Right that, 
 \end{figure*}
 
 
+In Fig. \ref{fig:dephasing_spin_boson} the results of the simulations are shown in the three cases, i.e. $s=0.5,1,1.5$. The other parameters used in the simulations are $g=1.8$, $\omega_c =0.2$, $\Lambda=0.5$, $\beta=10$, $\tau=32/\omega_c$, and where $\omega_k$ are $N_B=100$, taken equally spaced between $0$ and $1$. The initial state instead has been fixed to $\rho_{S,0}=\mu_0 = \tilde{\rho}_{S,0} = \ketbra{+}{+}$. 
+Importantly, one can observe in Fig. \ref{fig:dephasing_spin_boson} Right that, in each of the three cases, the error committed by the second order approximation, Eq. \eqref{eq:time_ordered_boson} is below that of the coarse-grained dynamics, Eq. \eqref{eq:coarse_grained_boson} for both the initial and final phases while it is above for a central phase.     
 
+\TG{This indicates that the second order approximation performs better than the coarse-grained Markovian approximation in this case.}
 
-In this section we consider a dissipative central spin model to showcase the capabilities of the proposed technique. Similar models have been studied in the literature, see e.g. \cite{barnes2012nonperturbative, tiwari2025strong, jing2018decoherence, ferraro2008}. The model is composed by a system, i.e. $\Hc_S\simeq\Cb^2$ also denoted as spin $1$ and a bath composed of $N_B$ other spins, i.e. $\Hc_B\simeq\Cb^{2^{N_B}}$ counted from $2$ to $N_B+1$. %A graphical representation of the system is depicted in Fig.\ref{fig:central_spin_figure}.
+\subsection{Dissipative central spin model}
+\label{sec:central_spin}
 
-The system Hamiltonian is described as $H = H_S + H_B + H_{\rm int}$ where:
-\begin{align*}
-    H_S &= \delta(\sigma_x^{(1)} + \sigma_z^{(1)})\\
-    H_B &= \frac{\gamma}{4}\left(2J_x^2-\frac{N_B}{2}\one\right)\\
-    H_{\rm int} &= \frac{\lambda}{2}\left(A_x \sigma_x^{(1)}J_x+ A_y \sigma_y^{(1)}J_y+A_z \sigma_z^{(1)}J_z\right)
-\end{align*}
-where $\sigma_u^{(j)}$ denotes the $u\in\{x,y,z\}$ Pauli matrix acting on the $j$-th spin and $J_u=\frac{1}{2}\sum_{k=2}^{N_B+1}\sigma_u^{(k)}$ denotes the total bath angular momentum operators. The bath is also in contact with a Markovian environment that dissiapates information. This interaction is described by the noise operators $L_k = \Lambda\sigma_-^{(k)}$ for all $k=2,\dots,N_B+1$ where $\sigma_\pm^{(k)} = \frac{1}{2}(\sigma_x^{(k)}\pm\sigma_y^{(k)})$.
-
+In this section we consider a dissipative central spin model to showcase the capabilities of the proposed technique. Similar models have been studied in the literature, see e.g. \cite{barnes2012nonperturbative, tiwari2025strong, jing2018decoherence, ferraro2008}. The model is composed by a system, i.e. $\Hc_S\simeq\Cb^2$ also denoted as spin $1$ and a bath composed of $N_B$ other spins, i.e. $\Hc_B\simeq\Cb^{2^{N_B}}$ counted from $2$ to $N_B+1$. 
 
 \begin{figure*}[th]
     \centering
@@ -603,6 +597,15 @@ where $\sigma_u^{(j)}$ denotes the $u\in\{x,y,z\}$ Pauli matrix acting on the $j
     \label{fig:spin_chain}
 \end{figure*}
 
+
+The system Hamiltonian is described as $H = H_S + H_B + H_{\rm int}$ where:
+\begin{align*}
+    H_S &= \delta(\sigma_x^{(1)} + \sigma_z^{(1)})\\
+    H_B &= \frac{\gamma}{4}\left(2J_x^2-\frac{N_B}{2}\one\right)\\
+    H_{\rm int} &= \frac{\lambda}{2}\left(A_x \sigma_x^{(1)}J_x+ A_y \sigma_y^{(1)}J_y+A_z \sigma_z^{(1)}J_z\right)
+\end{align*}
+where $\sigma_u^{(j)}$ denotes the $u\in\{x,y,z\}$ Pauli matrix acting on the $j$-th spin and $J_u=\frac{1}{2}\sum_{k=2}^{N_B+1}\sigma_u^{(k)}$ denotes the total bath angular momentum operators. The bath is also in contact with a Markovian environment that dissiapates information. This interaction is described by the noise operators $L_k = \Lambda\sigma_-^{(k)}$ for all $k=2,\dots,N_B+1$ where $\sigma_\pm^{(k)} = \frac{1}{2}(\sigma_x^{(k)}\pm\sigma_y^{(k)})$.
+
 For this example we consider as an initial condition the factorized state $\rho_0 = \ketbra{+}{+} \otimes \rho_B$
 where \[\rho_B = \frac{e^{-\beta H_B}}{\tr[e^{-\beta H_B}]}\]
 is the thermal state at inverse temperature $\beta$. 
@@ -610,7 +613,7 @@ This allows us to define the reduction and injection maps as $\Rc(\cdot) = \tr_B
 The reduced state then corresponds to the state of the central spin, i.e. 
 \[\eta_t = \rho_S(t) \equiv \tr_B(\rho_t).\]
 
-In Fig.\ref{fig:central_spin} the results of the simulation for this dissipative central spin model are shown. The simulation has been run in two settings: a purely Hamiltonian setting ($\Lambda=0$ on the left) and a dissipative setting ($\Lambda=0.8$ one the right). The rest of the parameters used were $N_B = 3$, $\delta=0.3$, $\lambda=0.1$, $\gamma=1$, $A_x=1.2$, $A_y=1.5$ $A_z=1.3$ and $\beta=50$. In the numerical simulations we can observe a few interesting aspects: first, as expected, the error between the exact solution and the approximate solution $\norm{\eta_t-\mu_t}_tr$ decreases when increasing the approximation degree $N$; second, the trajectory for approximation orders $N=1,2$ and even $3$ do not exit the Bloch sphere (note that we have proven the complete positivity for orders $N=1,2$ but not for $N=3$); the simulations for $N>3$ are displaying Runge's phenomena at larger times, which is quite typical in these situations; after some time, the evolved state $\eta_t$ for an approximation degree $N\geq4$ exits the Bloch sphere, indicating that the dynamics is not CPTP at all times for approximation degrees higher than $N\geq4$.
+In Fig.\ref{fig:central_spin} the results of the simulation for this dissipative central spin model are shown. The simulation has been run in two settings: a purely Hamiltonian setting ($\Lambda=0$ on the left) and a dissipative setting ($\Lambda=0.8$ one the right). The rest of the parameters used were $N_B = 3$, $\delta=0.3$, $\lambda=0.1$, $\gamma=1$, $A_x=1.2$, $A_y=1.5$ $A_z=1.3$ and $\beta=50$. In the numerical simulations we can observe a few interesting aspects: 1) as expected, the error between the exact solution and the approximate solution $\norm{\eta_t-\mu_t}_tr$ decreases when increasing the approximation degree $N$; 2) the trajectory for approximation orders $N=1,2$ and even $3$ do not exit the Bloch sphere (note that we have proven the complete positivity for orders $N=1,2$ but not for $N=3$); 3) the simulations for $N>3$ are displaying Runge's phenomena at larger times, which is quite typical in these situations; 4) after some time, the evolved state $\eta_t$ for an approximation degree $N\geq4$ exits the Bloch sphere, indicating that the dynamics is not CPTP at all times for approximation degrees higher than $N\geq4$.
 
 
 \subsection{Ising spin chain}
@@ -624,14 +627,14 @@ In this example we consider $\Pc$ to be the CPTP projector onto the diagonal $\P
 
 As an initial condition we consider $\rho_0=\ketbra{0}{0}$. Trivially, $\Pc(\rho_0)=\rho_0$ hence Assumption \ref{ass:proj} is satisfied.
 
+Numerically, we verified that $\Fc_{(1)}=\Fc_{(3)}=0$ while $\Fc_{(2)}$ is graphically represented in Fig. \ref{fig:matrix} where one can verify that $\Fc_{(2)}$ is Metzler (i.e. A matrix $A$ is Metzler if $A_{i,j}\geq0$ for all $i\neq j$) and is such that $\onev^T \Fc_{(2)} = 0$. Those two conditions are the classical equivalent to the properties characterizing a Lindblad generator and in fact imply that $e^{\Fc_{(2)}t}$ is a stochastic matrix for all $t\geq0$. This directly implies that $\Tb e^{\int_0^t \Fc_{s,2} ds}$ is CPTP, or stochastic in this case, for all $t\geq0$. 
+
 \begin{figure}[th]
     \centering
     \includegraphics[width=.6\linewidth]{matrix.pdf}
     \caption{Graphical representation of the term $\Fc_{(2)}$ for the time-dependent generator $\Fc_t$ of the Ising spin chain model.}
     \label{fig:matrix}
 \end{figure}
-
-Numerically, we verified that $\Fc_{(1)}=\Fc_{(3)}=0$ while $\Fc_{(2)}$ is graphically represented in Fig. \ref{fig:matrix} where one can verify that $\Fc_{(2)}$ is Metzler (i.e. A matrix $A$ is Metzler if $A_{i,j}\geq0$ for all $i\neq j$) and is such that $\onev^T \Fc_{(2)} = 0$. Those two conditions are the classical equivalent to the properties characterizing a Lindblad generator and in fact imply that $e^{\Fc_{(2)}t}$ is a stochastic matrix for all $t\geq0$. This directly implies that $\Tb e^{\int_0^t \Fc_{s,2} ds}$ is CPTP, or stochastic in this case, for all $t\geq0$. 
 
 Fig. \ref{fig:spin_chain} shows the results of the simulations of the Ising spin chain model with $N_B = 4$, $A= 0.3$, $h=0.36$ where we can observe similar results to the other simulations included in this work: increasing the approximation degree decreases the error $\norm{\eta_t-\mu_t}_2$ at low times; for $N=2$ the approximate evolved state $\mu_t$ remains a probability distribution while for $N\geq4$, after a certain time, the state is no longer a probability distribution. 
 
@@ -647,15 +650,18 @@ Cons of the method: 1) The method only works for short-time approximations.
 Outlook:
 \begin{itemize}
     \item convergence of the considered series (lifting part Assumption 2 to get from polynomial to analytic). Say it can be interesting mathematically but practically one would not want to do it. Also explain the difficulties we could encounter (proof of thm1).
-    \item What happens if we remove the assumption $\Pc(\rho_0)= \rho_0$
-\end{itemize}}
+    \item What happens if we remove the assumption $\Pc(\rho_0)= \rho_0$.
+\end{itemize}
 
-\section{Code availability}
-The code necessary to reproduce all the numerical experiments presented in this work is available at \cite{Myrepo}. 
+Say that given the numerical experiments of the central spin we expect that the higher orders of approximations do not retain the CPTP property.}
+
 
 \section{Acknowledgments}
-The author would like to thank Francesco Ticozzi for his contribution in the primordial idea of this work and for his constant support. The author would also like to thank Lorenza Viola, Michiel Burgelman, Augusto Ferrante and Giacomo Baggio for the useful discussions on the matters of this work. 
+The author would like to thank Francesco Ticozzi for his contribution in the primordial idea of this work and for his constant support. The author would also like to thank Lorenza Viola, Michiel Burgelman, Augusto Ferrante and Giacomo Baggio for the useful discussions on the matters of this work.
 
+\paragraph{Code availability:} The code necessary to reproduce all the numerical experiments presented in this work is available at \cite{Myrepo}. 
+
+\paragraph{Funding:}
 The author has been supported by the Italian Ministry of University and Research under the PRIN project “Extracting essential information and dynamics from complex networks”, grant no. 2022MBC2EZ.
 
 \bibliography{ref}
