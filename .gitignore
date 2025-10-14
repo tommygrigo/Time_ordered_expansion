@@ -10,3 +10,5 @@ open_questions.tex
 *.fdb_latexmk
 *.csv
 *Notes.bib
+old_main.tex
+old_main.pdf
