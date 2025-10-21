@@ -40,54 +40,51 @@
 
 \begin{document}
 
-\title{
-%Time-ordered expansion for the derivation of time-convolutionless master equations\\
-%The price of time-dependence: A time-polynomial approach to model reduction of large dynamical models with applications to quantum mechanics
-%\\
-%Time-dependent model reduction:  
-%Model reduction via time-dependent polynomial generators\\ with applications to quantum mechanics\\
-Complexity vs time-dependence: model reduction for classical and quantum mechanics
-}
+\title{Computing time-dependent reduced models for classical and quantum dynamics}
 
 \author{Tommaso Grigoletto}
+\affiliation{Department of Information Engineering, University of Padova, Italy} 
 
 \date{\today}
 
 \begin{abstract}
-    In any branch of science, the ability to simulate the evolution of large dynamical models is of paramount importance but, whenever the model of interest is too large to be simulated exactly, one has to recur to model reduction methods and other approximation techniques to be able to simulate an approximate evolution of the process.  
-    In this work we explore a different approach to what is typically done to reduce the size of large models in control engineering: instead of looking for a linear time-invariant model we look for a linear time-varying model whose dimension is the same of the process we want to reproduce. Such a problem is typical in quantum mechanics for the derivation of time-convolutionless master equations. 
-    
-    Here we propose a novel method to compute an approximation of the linear time-varying generator that provides an alternative to the typycal derivation of quantum master equations. The proposed approximation is polynomial in the time variable and the derivation is based on the Taylor expansion of the exponential map and a novel result on the computation of the time-ordered exponential for time-dependent generators that are polynomial in time. The resulting generator  approximate the exact evolution for small times, does not require a weak coupling assumption and is guaranteed to provide a CPTP semigroup at the lowest orders. Importantly, the coefficients of the polynomial can be computed through a recursive formula which numerically gives easy access to higher order approximations. The proposed method is tested against prototypical models of including quantum models of interest: a dephasing spin-boson model a central spin model and an Ising spin chain. 
+    This paper introduces a novel method for approximating the dynamics of a large autonomous system projected onto a fixed subspace. The core contribution is a novel recursive algorithm to construct an effective time-dependent generator that is polynomial in the time variable, ensuring accuracy for short time scales. The derivation is based on the Taylor expansion of the exponential map and a new result for computing the time-ordered exponential of polynomial generators.
+    This work is motivated by the challenge of deriving time-convolutionless master equations in quantum physics and the proposed method offers an alternative to typical derivations based on expansions in the coupling strength. 
+    The resulting approximation is accurate for small times, does not require a weak-coupling assumption, performs better than a truncation of the exponential map at low orders and, crucially, guarantees a completely positive and trace-preserving map at the lowest orders. The proposed method is validated against several prototypical models: a dephasing spin-boson model, a central spin model, and an Ising spin chain.
 \end{abstract}
 
 \maketitle
 
+\TG{check FOR TYPOS
+
+Ripensare a titoli sezioni
+
+Aggiungere modello di reti ??}
+
 \section{Introduction}
+Whenever a dynamical model is too large to be simulated efficiently, one should recur to model reduction techniques to find a smaller model that is simulatable and that retains fundamental characteristics of the original system. A dominant approach in control systems theory -- including for example minimal realization techniques \cite{rosenbrock1970state}, balanced truncation \cite{antoulas,gugercin2004survey} and moment matching \cite{astolfi_moment_matching,padoanmomentmatching} -- consists in finding a low-dimensional subspace where to project the dynamics obtaining a linear time invariant (LTI) model. This work considers a different approach: the space onto which the dynamics is projected is assumed to be {\em given a priori and fixed} and, instead, the dynamics is approximated by seeking a linear time-varying (LTV) model. 
 
-Whenever a dynamical model is too large to be simulated efficiently, one should recur to model reduction techniques to find a smaller model that is simulatable and that retains fundamental characteristics of the original one. Typical methods considered in control systems theory to perform model reduction such as balanced truncation \cite{antoulas,gugercin2004survey} and moment matching \cite{astolfi_moment_matching,padoanmomentmatching} look for linear time invariant (LTI) models that approximate the evolution of the original model. Here, we consider a different approach: we look for a linear time-varying (LTV) model of a fixed size that approximate the evolution. 
+Such an approach is inspired by quantum physics. 
+To obtain realistic models of open quantum systems, one shall consider the effects of the interaction between the system and its environment \cite{breuer2002theory}. Unfortunately, simulating the system-environment couple is impractical (if not impossible) as the scaling of the Hilbert space makes such a simulation prohibitive even for small environments. This implies that, in order to study the effect of the coupling with the environment, one needs to find a reduced model that (hopefully) captures the interesting features of the interaction.
 
-Such an approach is motivated by physics. 
-To obtain realistic models of quantum systems, one shall consider the effects that the interaction between the system and its environment have on the evolution of the system. Such an interaction generates important behaviors such as dissipation and dephasing hence modelling these effects precisely is a mandatory task to study open quantum systems \cite{breuer2002theory}. Unfortunately, modelling the entire system is only doable in theory as the scaling of the Hilbert space prohibits any simulation or analysis of the joint system--environment even for small sizes of the environment. This fact implies that in order to study the effect of the coupling with the environment, one needs to reduce the model and aim for an approximate description of the system that hopefully captures the interesting features of the original model.
+A common method to reduce the joint system-environment model is known in the physics literature with the name of time-convolutionless master equations (TCL ME) \cite{shibata_generalized_1977,chaturvedi_time-convolutionless_1979}. Such a method aims at obtaining an LTV model of the same size of the system that replicates the effects of the interaction with the environment. While a formal exact solution to such a problem exists, computing this exact LTV generator is generally considered to be as difficult as solving the original model. The main approach found in the physics literature approximates this formal solution by leveraging an expansion in the strenght of the coupling between the system and environment, which is typically assumed to be small. For more details see e.g. \cite{breuer2002theory} and references therein. 
 
-A common method to reduce the joint system-environment model is known in the physics literature with the name of time-convolutionless master equations (TCL ME) \cite{shibata_generalized_1977,chaturvedi_time-convolutionless_1979}. Such a method aims at obtaining a linear time-varying model (LTV) that replicates the effects of the environment by leveraging an expansion in the strenght of the coupling between the system and environment, which is typically assumed to be small. For more details see e.g. \cite{breuer2002theory} and references therein. 
+In this work an alternative approach is proposed: instead of an expansion in the coupling strength, an expansion in time is considered. In particular, since the formal solution provides an LTV generator that is analytic in the time variable $t$, the exact un-computable generator is approximated with its truncation to a finite order $N$.  Under these assumptions a recursive formula for the coefficients of the polynomial generator is found, and the approximation error of the resulting reduced model scales as $O(t^{N+1})$. 
 
-In this work we propose an alternative method to derive a similar approximation. In particular, instead of performing an expansion in one of the system's parameters, % we lift the assumption of having a weak coupling between the system and its environment and 
-we perform an expansion in the time variable $t$. This allows us to derive a reduced model that is time-varying but only polynomial in $t$. Under these assumptions we are able to propose a recursive formula for the coefficients of the polynomial generator that offers an approximation whose error scales as $O(t^N)$ where $N$ is the order of the polynomial. 
+Note that, while time-dependent dynamical systems are typically more difficult to study than time-independent ones, such an approach finds an important application in the simulation of very large systems as the Runge-Kutta methods allow to simulate time-dependent models \cite{ascher1997implicit}. In this regard, under the assumption of a time-dependent generator that is {\em polynomial} in $t$, this paper proposes a novel recursive formula to compute the propagartor of this LTV model.
 
-Note that, while time-dependent dynamical systems are typically more difficult to study, such an approach finds an important application in the simulation of very large systems as the Runge-Kutta methods allow to simulate time-dependent systems \cite{ascher1997implicit}. 
+Another benefit of the proposed reduction method consists in the fact that, when computing the reduced LTV generator for unitarily evolving quantum systems, the reduced polynomial generator at first and second order is provably in Lindblad form for all times $t$ thus ensuring that the reduced model at the lowest orders generates a completely positive and trace preserving semigroup.   
 
-When we apply the methods proposed in this work to quantum systems, we are able to prove that, in the common case of purely Hamiltonian evolution, the reduced polynomial generator at first and second order is in Lindblad form for all times $t$.   
+It is important to point out that the method proposed in this work is not intended to substitute the perturbative approach for approximating TCL MEs \cite{shibata_generalized_1977,chaturvedi_time-convolutionless_1979} but rather to provide an alternative that can be of use whenever the main assumptions of the standard method do not hold, e.g. in the strong coupling regime or whenever the time-ordered integrals are difficult to assess. 
 
-It is important to point out that the method proposed in this work is not intended to substitute the perturbative approach at deriving the  TCL ME \cite{shibata_generalized_1977,chaturvedi_time-convolutionless_1979} but rather to provide an alternative that can be of use whenever the main assumptions of the standard method do not hold, e.g. in the strong coupling regime or whenever the time-ordered integrals are difficult to assess. 
-
-For the reader's convenience we next summarize the main contributions of this work:  
+\textbf{Structure and paper contributions:} For the reader's convenience the structure of this work and its main contributions are summarized next:  
 \begin{itemize}
-    \item In Sec. \ref{sec:time_ordered} we propose the polynomial approximation of the of the evolution of LTI systems for general linear autonomous (not necessarily quantum) models and present the recursive equation that determines the coefficients of the polynomial. We also test the proposed solution on a linear model and compare its results against the truncation of the exponential series. 
-    \item In Sec. \ref{sec:cptp_second_order} we connect the proposed method with the derivation of TCL ME and, importantly, we discuss the connections between the recursive formula we obtain and other similar recursive equations known in the physics literature \cite{nestmann2019time,cerrillo2014non,cygorek2025timenonlocalversustimelocallongtime,gasbarri2018recursive} by highlighting how the expansion in $t$ greatly simplifies the associated calculations. Furthermore, we leverage a few recent results \cite{grigoletto2024exact,grigoletto2025quantummodelreductioncontinuoustime} to prove that, when the original dynamics is purely Hamiltonian the proposed approximation at first and second order provides a CPTP (two-parameter) semi-group.
-    \item In Sec. \ref{sec:applications} we test the proposed procedure on several prototypical quantum examples: a dephasing spin boson model, a central spin model and and Ising spin chain. 
+    \item In Sec. \ref{sec:problem_setting} the problem treated in this work is defined rigorously. Next the known formal solution of the problem is derived in detail by leveraging the Nakajima-Swanzig equations \cite{nakajima,zwanzig},  and the key difficulties associated with computing such an LTV model are explained.  
+    \item In Sec. \ref{sec:time_ordered} the main contribution of the paper is presented: Theorem \ref{thm:approx} derives the polynomial approximation of formal LTV model and the recursive equation that determines its coefficients. This result is based on Theorem \ref{thm:time_ordered_expansion} where a novel method to compute the time-ordered exponential is derived. The reduction procedure is also validated on a linear model and compared against the truncation of the exponential series. 
+    \item Sec. \ref{sec:cptp_second_order} focuses on the application of the proposed reduction procedure to quantum dynamical models. The proposed method is connected and compared with the typical approach found in the physics literature for the approximation of TCL ME based on the expansion of the coupling strength. The connections between the recursive formula obtained here and other similar recursive equations known in the physics literature \cite{nestmann2019time,cerrillo2014non,cygorek2025timenonlocalversustimelocallongtime,gasbarri2018recursive} is discussed,  highlighting how the expansion in $t$ greatly simplifies the associated calculations. Most importantly, by leveraging a few recent results \cite{grigoletto2024exact,grigoletto2025quantummodelreductioncontinuoustime} it is proven tha that, when the original dynamics is purely Hamiltonian,  the proposed approximation at first and second order provides a CPTP (two-parameter) semi-group.
+    \item In Sec. \ref{sec:applications} the proposed procedure is validated against several prototypical quantum examples: a dephasing spin boson model, a central spin model and and Ising spin chain. Note that the majority of the applications presented in this work are in the context of quantum physics since, up to this point, this area is where these model reduction techniques to find a reduced LTV model have found most applications.  
 \end{itemize}
-Throughout the paper we include pedagogical examples that intutively explain the most involved proofs and highlight both the strengths and weaknesses of the proposed approximation procedure, namely: the recursive formula used to compute the terms of the generators at different orders makes the procedure numerically easier to access at higher orders than the alternatives; allows for an initial model that is in Lindblad form (not only purely Hamiltonian); does not require the model to be put in rotating frame; and does not rely on a weak coupling assumption hence it allows to study systems even in strong coupling regimes. On the other hand, the proposed reduction procedure relies on an expansion in time and thus provides a good approximation only for small times. While this aspect is limiting, similar restriction also hold in the well known approximations of the time-convolutionless master equation proposed by \cite{shibata_generalized_1977}.
-
+Throughout the paper pedagogical examples are included to intuitively explain the most involved proofs. Furthermore, both the strengths and weaknesses of the proposed approximation procedure are highlighted in detail, namely: the recursive formula used to compute the terms of the generators at different orders makes the procedure numerically easier to access at higher orders than the alternatives; allows for an initial model that is in Lindblad form (not only purely Hamiltonian); does not require the model to be put in rotating frame; and does not rely on a weak coupling assumption, hence it allows to study systems even in strong coupling regimes. On the other hand, the proposed reduction procedure relies on an expansion in time and thus provides a good approximation only for small times. While this aspect is limiting, similar restriction also hold in the well known approximations of the TCL ME proposed by \cite{shibata_generalized_1977}.
 
 \section{Problem setting and connection with the literature}
 \label{sec:problem_setting}
@@ -98,10 +95,10 @@ In this work we assume to be given a LTI stable autonomous model of the type
     \dot{x}_t = L x_t
     \label{eq:original_model_linear}
 \end{equation}
-where $x_t\in\Cb^n$ is the system's state and $L\in\Cb^{n\times n}$ is the state matrix or generator. Such a generator defines a one-parameter (Markovian) semigroup, i.e. $\{\Lambda_t \equiv e^{L t}\}_{t\geq 0}$ such that $\Lambda_{t+s} =\Lambda_t\Lambda_s$, forall $t,s\geq0$.
+where $x_t\in\Cb^n$ is the system's state and $L\in\Cb^{n\times n}$ is the state matrix or generator. Such a generator defines a one-parameter semigroup, i.e. $\{\Lambda_t \equiv e^{L t}\}_{t\geq 0}$ such that $\Lambda_{t+s} =\Lambda_t\Lambda_s$, forall $t,s\geq0$.
 
-We next assume that, for some reason dictated by the application at hand, we are actually not interested in reproducing all the degrees of freedom contained in the system's state $x_t$, but we are only interested in the degrees of freedom contained on a given subspace $\Vs\subseteq\Cb^n$. 
-Let then $P\in\Cb^{n\times n}$, be a projector $P^2=P$ onto $\Vs={\rm Im}P$. Note that $P$ does not need to be orthogonal (with respect to the standard inner product $\langle\cdot,\cdot\rangle$), i.e. $P^\dag \neq P$. For future convenience, let us define $Q\equiv \one-P$ where $\one$ denotes the identity matrix, let us denote by $m$ the dimension of $\Vs$ and let us factorize $P$ into two linear maps: the reduction $R\in\Cb^{m\times n}$ and the injection $J\in\Cb^{n\times m}$ such that $P=JR$ and $RJ = \one_m$ the identity in $\Cb^{m\times m}$.
+We next assume that, for some reason dictated by the application at hand, we are not interested in reproducing all the degrees of freedom contained in the system's state $x_t$, but we are only interested in the degrees of freedom contained on a given subspace $\Vs\subseteq\Cb^n$ of dimension $m=\dim(\Vs)$. Importantly, we here assume the subspace to be {\em given and fixed} $\Vs$.
+Let then $P\in\Cb^{n\times n}$, be a projector $P^2=P$ onto $\Vs={\rm Im}P$. Note that $P$ does not need to be orthogonal (with respect to the standard inner product $\langle\cdot,\cdot\rangle$), i.e. $P^\dag \neq P$. For future convenience, let us define $Q\equiv \one-P$ where $\one$ denotes the identity matrix and let us factorize $P$ into two linear maps: the {\em reduction} $R\in\Cb^{m\times n}$ and the {\em injection} $J\in\Cb^{n\times m}$ such that $P=JR$ and $RJ = \one_m$ the identity in $\Cb^{m\times m}$. 
 
 We further make a simplifying assumption that is quite typical in these settings, see e.g. \cite{breuer2002theory}: We assume that $x_0\in\Vs$, or equivalently $Px_0 = x_0$.
 
@@ -113,37 +110,46 @@ We further make a simplifying assumption that is quite typical in these settings
 \end{figure}
 
 
-Summarizing, in this work we are interested in deriving a reduced model that is capable of reproducing the trajectories 
-\begin{equation}
-    Pe^{Lt}x_0,\quad \forall x_0\in\Vs, \quad \forall t\geq0
-\end{equation}
+Summarizing, we have the model
+\[\begin{cases}
+\dot{x}_t = L x_{t}\\
+y_t = R x_t
+\end{cases}, \quad x_0\in\Vs\]
+where we defined the output signal $y_t\in\Rb^m$.
+
+In this work we are interested in deriving a reduced model that is capable of reproducing the trajectories \(y_t = Pe^{Lt}x_0,\quad \forall x_0\in\Vs, \quad \forall t\geq0\)
 or, equivalently,
 \begin{equation}
-    R e^{Lt} J \check{x}_0,\quad \forall \check{x}_0\in\Cb^m, \quad \forall t\geq0.
-\end{equation} 
-Here however, we take a different route to the standard approach to  model reduction used in the control community, e.g balanced truncation \cite{antoulas,gugercin2004survey} and moment matching \cite{astolfi_moment_matching,padoanmomentmatching}. In particular, instead of aiming to reduce the trajectories of interest by looking for an LTI model of dimension larger than $m$, we look for an LTV model of dimension $m$ that approximate the trajectories of interest. Note that while this approach is not common in the control literature this has been studied in the physics literature for the derivation of TCL ME as detailed in Sec. \ref{sec:quantum_connection}.
+    y_t = R e^{Lt} J \check{x}_0,\quad \forall \check{x}_0\in\Cb^m, \quad \forall t\geq0.
+\end{equation}
 
- Let us then define a state $z_t\in\Cb^m$ whose evolution is given by an LTV model of the type
+Note that, when $\Vs$ is $L$-invariant, the problem has a trivial solution since by projecting the generator $L$ onto $\Vs$ one obtains the the reduced generator $RLJ$ that exactly reproduces all the trajectories of interest.   
+One can obtain an exact and minimal LTI reduced model by computing the orthogonal to the non-observable subspace $\Ns^\perp$ as the smallest $L^\dag$-invariant subspace that contains $\Vs$ and projecting the dynamics onto it thus obtaining the smallest observable LTI model \cite{rosenbrock1970state}. The drawback of this approach however is the fact that, if the couple $(L,R)$ is observable, the model can not be reduced exactly. In those cases one should recur to approximate model reduction techniques such as balanced truncation \cite{antoulas,gugercin2004survey} and moment matching \cite{astolfi_moment_matching,padoanmomentmatching}.
+In those cases, one aims to find a subspace where to project the dynamics in order to obtain an LTI model that approximates the trajectories of interest in a given metric. 
+
+In this work, we take a different route: We fix the subspace where to project the dynamics to $\Vs$ and lift the time-independence constraint by looking for an LTV model of dimension $m$ that approximate the trajectories of interest. Note that, while this approach is not common in the control literature, this has been studied in the physics literature for the derivation of TCL ME as detailed in Sec. \ref{sec:quantum_connection}.
+
+More rigorously, let us define a state $z_t\in\Cb^m$ whose evolution is given by an LTV model of the type
  \begin{equation}
     \begin{cases}
         \dot{z}_t = F_t z_t\\
         z_0 = R x_0
     \end{cases}
  \end{equation}
- where $F_t$ is a time-dependent generator. The evolution of such an LTV model is given by the two-parameter (non-Markovian) semigroup $\{\Upsilon_t \equiv \Tb e^{\int_0^t F_s ds} \}_{t\geq0}$, where $\Tb$ denotes the time-ordering operator, for which the composition rule $\Upsilon_{t,0}=\Upsilon_{t,s}\Upsilon_{s,0}$ for all $0\leq s\leq t$ holds. 
+ where $F_t\in\Cb^{n\times n}$ is a time-dependent generator. The evolution of such an LTV model is given by the two-parameter semigroup $\{\Upsilon_t \equiv \Tb e^{\int_0^t F_s ds} \}_{t\geq0}$, where $\Tb$ denotes the time-ordering operator, for which the composition rule $\Upsilon_{t,0}=\Upsilon_{t,s}\Upsilon_{s,0}$ for all $0\leq s\leq t$ holds. 
 
-Our aim is then to construct $F_t$ so that $x_t\approx R x_t$. In other words we want to determine $F_t$ so that \[\Tb e^{\int_0^t F_s ds} \approx R e^{L t} J.\] The sense in which the approximation $\approx$ is intended shall be defined more precisely later on in the paper. A graphical representation of the approximation problem is given in Fig.\,\ref{fig:schematic}.   
+Our aim is then to construct $F_t$ so that $z_t\approx y_t$ or, in other words, we want to determine $F_t$ so that \[\Tb e^{\int_0^t F_s ds} \approx R e^{L t} J.\] The sense in which the approximation $\approx$ is intended shall be defined more precisely later on in the paper. A graphical representation of the approximation problem is given in Fig.\,\ref{fig:schematic}.   
 
-\subsection{Time-convolutionless master equation}
+\subsection{Reduced and exact time-dependent dynamics}
 
-Before moving to the method proposed in this work for computing the time dependent generator $F_t$ we shall discuss the derivation of time-convolutionless master equations, which is the standard method found in the physics literature \cite{Tokieda_2025, chaturvedi_time-convolutionless_1979, nestmann_time-convolutionless_2019, shibata_generalized_1977} to solve the issue at hand. The derivation is particularly elegant and makes use of the Lagrange equation. We report it here for the interested reader. 
+Before moving to the method proposed in this work for computing the time dependent generator $F_t$ we shall discuss the common derivation found in the physics literature to solve the issue at hand \cite{Tokieda_2025, chaturvedi_time-convolutionless_1979, nestmann_time-convolutionless_2019, shibata_generalized_1977}. The derivation is particularly elegant hence we report it here for the interested reader. 
 
 Dividing the evolution of $x_t$ in the evolution of $P x_t$ and that of $Q x_t$ we have 
 \begin{align}
     \frac{d}{dt}P x_t &= P LP x_t + PLQ x_t,\label{eq:P_rho_t}\\
     \frac{d}{dt}Q x_t &= QLP x_t + QLQ x_t.
 \end{align}
-Solving the second equation for $Q x_t$ (using the Lagrange equation) we obtain
+Solving the second equation for $Q x_t$ with the Lagrange equation we obtain
 \[Qx_t = e^{QLQ t} Qx_0 + \int_0^t e^{QLQ s }QLP x_{t-s} ds.\]
 By substituting this equation into Eq. \eqref{eq:P_rho_t} we obtain the famous Nakajima-Zwanzig equation \cite{nakajima,zwanzig}:
 \begin{align}
@@ -154,7 +160,10 @@ We then recall that
 so that 
 \[Qx_t = e^{QLQ t} Qx_0 +\int_0^t e^{QLQ s }QLP e^{-L s} ds\, \cdot\, (P + Q) x_t. \]
 Now, defining 
-\[M_t \equiv \one - \int_0^t e^{QLQ s }QLP e^{-L s} ds\]
+\begin{equation}
+    M_t \equiv \one - \int_0^t e^{QLQ s }QLP e^{-L s} ds
+    \label{eq:M_t}
+\end{equation}
 we have 
 \[M_t Qx_t = e^{QLQ t} Qx_0 + (\one-M_t) Px_t.\]
 If we then assume that $M_t$ is invertible we obtain 
@@ -176,15 +185,29 @@ which, separating the Projector $P$ into its factors $P = JR$, gets simplified t
 \end{equation}
 
 
-A few comments on this solution are in order: i) The invertibility of $M_t$ needs to be verified and typically only holds fot small $t$, see e.g. \cite{breuer2002theory}. ii)
-Note that, in order to compute $F_t$ (or equivalently $K_t$) one needs to first compute the convolution integral that defines $M_t$ and then to compute the inverse of $M_t$. Both these tasks are challenging (numerically and analytically) and it is generally considered that solving this integral and inverse is as difficult as solving the original model \eqref{eq:original_model_linear}, see e.g. \cite{breuer2007}. Nevertheless, Eq. \eqref{eq:TCL_ME} provides an excellent starting point to compute an approximation of the reduced evolution since, to circumvent these numerical issues, $K_t$ is typically approximated by expanding it as an expansion in the coupling strength $\varepsilon$ and by computing the terms of the expansion as ordered cumulants \cite{breuer2002theory,breuer2006,nestmann2019time}.
-In many cases of interest this approximation of the TCL-ME provides a good approximation of the open quantum system dynamics, both in the  long-time and short-time regime. It is however important to note that there is no guarantee that such an approximation holds also for long times. As an example of this, see \cite{breuer2007} where it is shown that TCL2 and TCL4 (approximations at orders $N=2,4$) do not approximate the true dynamics in the long time regime.
+A few comments on this solution are in order:\\ 
+i) The invertibility of $M_t$ needs to be verified and typically only holds fot small $t$, (see e.g. \cite{breuer2002theory}) but for the times where $M_t$ is invertible, Eq. \eqref{eq:tcl_me_reduced} provides an exact solution to the problem at hand. \\
+ii) Note that, in order to compute $F_t$ (or equivalently $K_t$) one needs to first compute the integral that defines $M_t$ and then to compute the inverse of $M_t$. Both these tasks are challenging (numerically and analytically) and it is generally considered that solving this integral and inverse is as difficult as solving the original model \eqref{eq:original_model_linear}, see e.g. \cite{breuer2007}. Nevertheless, Eq. \eqref{eq:TCL_ME} provides an excellent starting point to compute an approximation of the reduced evolution. 
+
+To circumvent these numerical issues, $K_t$ is typically approximated by expanding it as an expansion in the coupling strength $\varepsilon$ and by computing the terms of the expansion as ordered cumulants \cite{breuer2002theory,breuer2006,nestmann2019time}.
+In many cases of interest this approximation provides a good approximation of the open quantum system dynamics, both in the  long-time and short-time regime. It is however important to note that there is no guarantee that such an approximation holds also for long times. As an example of this, see \cite{breuer2007} where it is shown that TCL2 and TCL4 (approximations at orders $N=2,4$) do not approximate the true dynamics in the long time regime.
 We refer the reader to Sec. \ref{sec:connection_with_literature} for further connections with the physics literature.
 
 \section{Polynomial approximations of the time-dependent generator}
 \label{sec:time_ordered}
 
-This work leverages a key assumption: we assume that the time dependent generator $F_t$ is polynomial in $t$, i.e. $F_{t,N} \equiv \sum_{k=0}^N t^k F_{(k+1)}$. This assumption is clearly restrictive, but it greatly simplifies the computation of the time-ordered exponential $\Tb e^{\int_0^t F_{s,N} ds}$ as shown in the next key result. 
+In this section we derive the key result of this work: a method to approximate the time dependent generator defined in Eq.\eqref{eq:tcl_me_reduced}, $F_t$. The derivation that follows rests on the following observation. 
+\begin{proposition}
+    Let $M_t$ be the time-dependent operator defined in Eq. \eqref{eq:M_t} and let $F_t$ be the time-dependent generator defined in Eq. \eqref{eq:tcl_me_reduced}. Then, for every $t$ such that $M_t$ is invertible, $F_t$ is analytic in $t$, i.e. 
+    \[F_t = \sum_{k=0}^{+\infty} t^k F_{(k+1)}.\]
+\end{proposition}
+\begin{proof}
+    We can start by observing that the function $e^{QLQt}QLPe^{-Lt}$ is the product of two analytic functions in $t$ hence it is analytic in $t$. Furthermore, as the integral of an analytic function is also analytic, see e.g. \cite{bourchtein2021analytic} we have that $M_t$  is also analytic in $t$. Finally, as the inverse of an analytic function $f(t)$ is analytic where $f(t)\neq0$, we have that $F_t$ is also analytic in $t$ whenever $M_t$ is invertible. 
+\end{proof}
+Note that we label the coefficients in the power series starting from $1$ instead of $0$ for later convenience. This insightful result allows us to: 1) focus on computing the terms of the power series $\{F_{(k+1)}\}_{k=0}^{+\infty}$ and 2) approximate $F_t$ by truncating the infinite power series to a finite order $N$. In what follows we thus approximate $F_t$ with the {\em polynomial time-dependent generator} 
+\[F_{t,N} \equiv \sum_{k=0}^N t^k F_{(k+1)}.\]
+Other than an obvious computational benefit introduced by computing the terms $F_{(k)}$ only to order $N$, the assumption that the generator is polynomial in the time variable greatly simplifies the computation of the time-ordered exponential $\Tb e^{\int_0^t F_{s,N} ds}$ as shown in the next key result. 
+
 \begin{theorem}
 \label{thm:time_ordered_expansion}
     Let us assume that \(F_{t,N} = \sum_{k=0}^{N} t^k F_{(k+1)}\). 
@@ -193,7 +216,7 @@ This work leverages a key assumption: we assume that the time dependent generato
         \Tb e^{\int_0^t F_{s,N} ds} = \sum_{k=0}^{+\infty} t^k E_{(k)}
         \label{eqn:time_ordered_expansion}
     \end{equation}
-    where $E_{(0)}=\Ic$ and 
+    where $E_{(0)}=\one$ and the other terms are defined by the recursion:
     \begin{equation}
         E_{(k)} =  \frac{1}{k} \sum_{s=1}^{k} F_{(s)}E_{(k-s)}
         \label{eqn:E_k}
@@ -204,7 +227,7 @@ Proof of this result and an explanatory example are given in Appendix \ref{sec:t
 
 Note that Eq. \eqref{eqn:E_k} provides a closed formula for the coefficients $E_{(k)}$ of the expansion of $\Tb e^{\int_0^t F_{s,N} ds}$ as a function of the coefficients $F_{(k)}$. Furthermore, only the terms $\{E_{(\ell)}\}_{\ell=1}^{k-1}$ appear in Eq. \eqref{eqn:E_k}, which means that this equation can be used iteratively to compute each $E_{(k)}$. 
 
-Theorem \ref{thm:time_ordered_expansion} provides the main intuition on how to construct the polynomial time dependent generator $F_{t,N}$: Eq. \eqref{eqn:time_ordered_expansion} provides an expansion for $\Tb e^{\int_0^t F_{s,N} ds}$ in the time variable $t$. We can then expand $e^{tL}$ in $t$ and construct $F_{(k)}$ so that the terms of $\Tb e^{\int_0^t F_{s,N} ds}$ match the terms of $R e^{tL} J$ by orders of $t$. This approach is similarly in principle to adiabtic elimination techniques \cite{adiabadic-elimination} but where instead of matching orders of $\varepsilon$ we match orders of $t$. The resulting procedure, which represents the main contribution of this work, is stated next.
+Theorem \ref{thm:time_ordered_expansion} provides the main intuition on how to compute the coefficients $\{F_{(k)}\}_{k=1}^{N+1}$ of the polynomial time dependent generator $F_{t,N}$: Eq. \eqref{eqn:time_ordered_expansion} provides an expansion for $\Tb e^{\int_0^t F_{s,N} ds}$ in the time variable $t$. We can then expand $e^{tL}$ in $t$ and construct $F_{(k)}$ so that the terms of $\Tb e^{\int_0^t F_{s,N} ds}$ match the terms of $R e^{tL} J$ by orders of $t$. This approach is similarly in principle to adiabtic elimination techniques \cite{adiabadic-elimination,Tokieda_2025} where, instead of matching orders of $\varepsilon$, we match orders of $t$. The resulting procedure, which represents the main contribution of this work, is stated next.
 \begin{theorem}
 \label{thm:approx}
 Let us define 
@@ -303,12 +326,12 @@ One can note that increasing the degree of approximation $N$ decreases the error
 A natural alternative numerical approximation that comes to mind is given by truncating the exponential expansion at a given order $N$, i.e. $Rx_t\approx \sum_{k=0}^{N} \frac{t^k}{k!} RL^k J\, Rx_0$. Note that such an approximation has numerical complexity almost identical to that of the approximation proposed in this work as in both cases one need to compute $L^N$. Furthermore, from a theoretical standpoint, both cases commit an error of the order of $O(t^{N+1})$. To test this fact numerically, in Fig. \ref{fig:error_linear} we included the actual error committed by these two approximations at the same orders of approximation: the continuous line denotes the error committed by the procedure proposed here while the dashed line is the error committed by the truncation of the exponential. One can observe that for lower orders ($N=1,2,5$) the procedure proposed here yields better results, while at higher orders this is not the case. 
 
 
-\section{Application to quantum mechanics and the Complete Positivity of the first and second order approximations}
+\section{Ensuring quantum models at lower orders}
 \label{sec:cptp_second_order}
 
-In this section we apply the results derived in the Sec. \ref{sec:time_ordered} to quantum mechanical models, the application that originally motivated this work. 
+In this section we apply the results derived in the Sec. \ref{sec:time_ordered} to quantum models, the application that originally motivated this work. 
 
-\subsection{The problem in quantum mechanics}
+\subsection{The problem for quantum dynamical models}
 \label{sec:quantum_connection}
 Let us consider a quantum system defined on a Hilbert space $\Hc$, and let $\Bf(\Hc)$ denote the set of bounded operators acting on $\Hc$. Unless differently specified, We only consider finite-dimensional systems, i.e. $\dim(\Hc)<\infty$, $\Hc\simeq\Cb^n$ and $\Bf(\Hc)\simeq \Cb^{n\times n}.$
 The state of such a system is described by a density operator $\rho\in\Df(\Hc)$ with $\Df(\Hc) = \{\rho\in\Bf(\Hc)|\, \rho=\rho^\dag\geq0,\,\tr\rho=1\}$. Here, We assume that the state of the system evolves according to the Von-Neumman master equation 
@@ -459,7 +482,7 @@ This fact allows us to prove the next result.
 \end{proof}
 \subsection{Second order in the special case of bipartite systems}
 \label{sec:second_order_bipartite}
-Because the proof of Theorem \ref{thm:cptp_second_order} is based on a few very technical results, we here want to present an pedagogical derivation of the same result in the special case of bipartite quantum systems. Note that this derivation is quite relevant in practice as it focuses on the most studied case of a bi-partite system but the cases included in the assumptions of Theorem \ref{thm:cptp_second_order} are more general. This exact case will be the focus of the two applications of interest studied in Sec \ref{sec:spin_boson} and \ref{sec:central_spin}.
+Since the proof of Theorem \ref{thm:cptp_second_order} is based on a few very technical results, we here want to present an pedagogical derivation of the same result in the special case of bipartite quantum systems. Note that this derivation is quite relevant in practice as it focuses on the most studied case of a bi-partite system but the cases included in the assumptions of Theorem \ref{thm:cptp_second_order} are more general. This exact case will be the focus of the two applications of interest studied in Sec \ref{sec:spin_boson} and \ref{sec:central_spin}.
 
 Let us assume that $\Hc = \Hc_S\otimes\Hc_E$ and let assume that the CPTP projector $\Pc$ is given by the $\Pc(\cdot) = \tr_E(\cdot)\otimes\tau$ for some full rank state $\tau\in\Df(\Hc_E)$. The projector $\Pc$ is then factorized into the reduction map $\Rc(\cdot) = \tr_E(\cdot)$ and the injection map $\Jc(\cdot) = \cdot\otimes \tau$. 
 In line with the assumptions of this section we assume that $\Lc(\cdot) = -i \ad_H(\cdot)$. Given the bipartite structure of the Hilbert space $\Hc$ we can always write $H = \sum_k S_k \otimes E_k$ for two sets of Hermitian operators $\{S_k\}\subset\Bf(\Hc_S)$ and $\{E_k\}\subset\Bf(\Hc_E)$.
@@ -515,7 +538,7 @@ Note that in deriving the reduced generator $\Fc_{t,2}$ there was no need to mov
 In this section we consider a few examples of interest:\\ 
 I) The first example considers a qubit coupled to a bosonic bath. As the exact solution of such a model is well known, this example allows us to assess the goodness of the approximation proposed in this work. \\
 II) Second, a qubit coupled to a finite bath is studied. Given the fact that the bath is finite-dimensional this is typically considered an ``highly non-Markovian model''. This example allows us to showcase the numerical procedure at higher orders for both a case where the original dynamics is purely Hamiltonian and a case where a dissipative term is included. \\
-III) Lastly an Ising spin chain is studied. This example allows us to showcase that the proposed procedure works in cases that are more general than the bipartite case and allows us to show that a non-Markovian reduced model can be obtained also for the population of the state (and not only for the bipartite case).
+III) Lastly an Ising spin chain is studied. This example allows us to showcase that the proposed procedure works in cases that are more general than the bipartite case.
 
 
 \begin{figure*}
@@ -629,7 +652,7 @@ where $\Lambda\in\Rb_+$ is an overall constant, $\omega_c\in\Rb_+$ is the bath c
 
 In Fig. \ref{fig:dephasing_spin_boson} the results of the simulations are shown in the three cases, i.e. $s=0.5,1,1.5$. The other parameters used in the simulations are $g=1.8$, $\omega_c =0.2$, $\Lambda=0.5$, $\beta=10$, $\tau=32/\omega_c$, and where $\omega_k$ are $N_B=100$, taken equally spaced between $0$ and $1$. The initial state instead has been fixed to $\rho_{S,0}=\mu_0 = \tilde{\rho}_{S,0} = \ketbra{+}{+}$. 
 Importantly, one can observe in Fig. \ref{fig:dephasing_spin_boson} Right that, in each of the three cases, the error committed by the second order approximation, Eq. \eqref{eq:time_ordered_boson} is below that of the coarse-grained dynamics, Eq. \eqref{eq:coarse_grained_boson} for both the initial and final phases while it is above for a central phase.     
-This indicates that the second order approximation performs better than the coarse-grained Markovian approximation in this case.
+This indicates that the second order approximation performs better than the coarse-grained approximation in this case.
 
 \subsection{Dissipative central spin model}
 \label{sec:central_spin}
@@ -698,13 +721,18 @@ Fig. \ref{fig:spin_chain} shows the results of the simulations of the Ising spin
 \section{Conclusions and outlook}
 \label{sec:conclusion}
 
-In this work we explored how model reduction can benefit from a reduced model that is time-dependendent. The problem of finding time dependent reduced model is motivated by the derivation of time-convolutionless master equations in quantum mechanics but can in principle be applied to any linear model. 
+In this work we explored a novel method for appproximating the dynamics of a large autonomous system projected onto a given subspace with a time-dependendent generator. The problem is inspired by the derivation of TCL ME in in quantum physics but has been treated here in the general case of linear autonomous systems. 
 
-The main contribution of this work consits of a novel method to compute a time-dependent model that is polynomial in time and that approximate the evolution of the original model well for small times. Importantly, the coefficeints of the polinomial can be determined using a recursive formula, Eq \eqref{eqn:F_k} that is far simpler than the alternatives. This method thus offer an alternative to the standard perturbative derivation of TCL ME. 
+The main contribution of this work consits of a novel method to compute the coefficients of the time-dependent model that is polynomial in time and that approximate the evolution of the projected dynamics for small times. Importantly, the coefficeints of the polinomial can be determined using a recursive formula.  
 
-Benefits of the proposed reduction method include: the method does not require to move into a rotating frame, making the calaulations simpler; the iterative form of the coefficients allow for easy calculations of the terms and, as shown in Sec. \ref{sec:linear_testbed}, for lower orders the method offers an advantage with respect to truncating the exponential; the proposed method applies to any linear model (not only purely Hamiltonian dyanmics); the method does not rely on a perturbation on some supposedly small parameter $\varepsilon$ allowing for analysis of systems into stronger coupling regimes; when the ogiginal dynamics is purely Hamiltonian, the reduced time-dependent model is ensured to generate a CPTP two-parameters semigroup at all times. All of this comes at the cost of having a model that approximates the original evolution in the short-time regime.   
+Benefits of the proposed reduction method include: the method does not require to move into a rotating frame, making the calaulations simpler; the iterative form of the coefficients allow for easy calculations of the terms and, as shown in Sec. \ref{sec:linear_testbed}, for lower orders the method offers an advantage with respect to truncating the exponential; the method does not rely on a perturbation on a small parameter $\varepsilon$ allowing for analysis of systems in strong coupling regimes; when the ogiginal dynamics is purely Hamiltonian, the reduced time-dependent model at the lowest two orders is ensured to generate a CPTP two-parameters semigroup at all times. All of this comes at the cost of having a model that approximates the original evolution in the short-time regime. 
 
-Future work shall focus on: i) extending Theorem \ref{thm:time_ordered_expansion} and Theorem \ref{thm:approx} to the case of analytic generators $F_t$ (whose main challange is dercribed in Appendix \ref{sec:thechnical_results:time_ordered}); ii) Lift the assumption $Px_0 =x_0$; iii) Apply the proposed procedure to other quantum models in the strong coupling regime to study models that were not accessible before and further test the capabilities of the method; iv) combine the classical model reduction methods and the time-dependent model reduction proposed here to see if the combination of the two methods can allow to improve the accuracy of the reduced model. Note that a first step in this direction has been taken in the physics literature by \cite{breuer2006,breuer2007} where, including extra degreees of freedom, has been shown to improve the accuracy of the derived TCL ME.
+Future work shall focus on: 
+i) extending Theorem \ref{thm:time_ordered_expansion} and Theorem \ref{thm:approx} to the case of analytic generators $F_t$; 
+ii) lifting the assumption $Px_0 =x_0$; 
+iii) generalize the results presented here to include control inputs (either linear as in control systems theory or bilinear for quantum systems);
+iv) apply the proposed procedure to other quantum models in the strong coupling regime to study models that were not accessible before and further test the capabilities of the method; 
+v) combine the classical model reduction methods and the time-dependent model reduction proposed here to see if the combination of the two methods can allow to improve the accuracy of the reduced model. Note that a first step in this direction has been taken in the physics literature by \cite{breuer2006,breuer2007} where, including extra degreees of freedom, has been shown to improve the accuracy of the derived TCL ME.
 
 Given the numerical examples of the central spin model presented in Sec. \ref{sec:central_spin} we do not expect the reduced model to retain the CP property for orders higher than $N=3$. It is however possible that, in the Hamiltonian case, for $N=3$ one can prove that the evolution of the reduced model is necessarily CP at all times as none of the simulation carried out while preparing this work contraddicted this statement. 
 
