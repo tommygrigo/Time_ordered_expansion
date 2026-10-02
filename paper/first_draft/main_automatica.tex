@@ -1,59 +1,258 @@
-\documentclass[10pt,aps,pra,twocolumn,showpacs,superscriptaddress,nobalancelastpage,notitlepage,nofootinbib,longbibliography]{revtex4-2}
 
+\documentclass[twocolumn]{autart}    % Enable this line and disable the 
+                                     % preceding line to obtain a two-column 
+                                     % document whose style resembles the
+                                     % printed Automatica style.
+\usepackage[usenames,dvipsnames]{xcolor}
+\usepackage{cancel}
+\usepackage{amsfonts,amsmath,amssymb}
+\usepackage{calc}
+\usepackage[english]{babel}
+\usepackage[normalem]{ulem}
+\usepackage[hidelinks]{hyperref}
+\usepackage{graphicx}
+\usepackage{subcaption,caption}
+\usepackage{epsfig}
+\usepackage{ulem}
+\usepackage{tikz}
+\usepackage{mathrsfs}
+\usepackage{bbold}             
+\usepackage{soul}
+\usepackage{bm}
 
-%\bibliographystyle{apsrev4-2-titles}
-\bibliographystyle{ieeetr}
-\input{header}
-\input{commands.tex}
+\newenvironment{proof}{\textbf{Proof.}}{\hfill $\qed$}
 
-\captionsetup{justification=Justified, format=plain, singlelinecheck=off}
-
-%-------------------------------------- ARTICLE ------------------------------
-
-\sethlcolor{yellow!50}
-
-\newcommand{\UP}[2]{\makebox[0pt]{\smash{\raisebox{1.5em}{$\phantom{#2}#1$}}}#2}
-\newcommand{\LF}[1]{\makebox[0pt]{$#1$\hspace{4.5em}}}
-
-\usepackage{xspace}% http://ctan.org/pkg/xspace
-\usepackage{xparse}% http://ctan.org/pkg/xparse
-\NewDocumentCommand{\cbox}{s O{1ex}}{%
-  \setlength{\fboxsep}{-\fboxrule}%
-  \IfBooleanTF{#1}% Condition on starred/unstarred
-    {\frame{\rule{0.5\dimexpr#2}{0.5\dimexpr#2}\rule[0.5\dimexpr#2]{0.5\dimexpr#2}{0.5\dimexpr#2}}}% \mybox*
-    {\fbox{\rule[0.5\dimexpr#2]{0.5\dimexpr#2}{0.5\dimexpr#2}\rule{0.5\dimexpr#2}{0.5\dimexpr#2}}}% \mybox
-  \xspace% Possible space
+%%% fix the missing bit in \endfrontmatter
+\edef\endfrontmatter{%
+  \unexpanded\expandafter{\endfrontmatter}% the current code
+  \noexpand\endNoHyper % add \endNoHyper at the end to match \NoHyper
 }
-\newcommand{\colorboxplus}{\cbox[0.6em]}
-%\newcommand{\bigcolorboxplus}{\cbox[0.7em]}
+%%%  This code comes from https://tex.stackexchange.com/questions/565299/hyperref-does-not-work-in-autart-cls
+%%% and is used to fix a mistake in the template by automatica that breaks the use of hyperreferences.
 
-\newcommand{\bigcolorboxplus}{
-  \mathop{
-    \vphantom{\bigoplus} 
-    \mathchoice
-      {\vcenter{\hbox{\resizebox{\widthof{$\displaystyle\bigoplus$}}{!}{$\colorboxplus$}}}}
-      {\vcenter{\hbox{\resizebox{\widthof{$\bigoplus$}}{!}{$\colorboxplus$}}}}
-      {\vcenter{\hbox{\resizebox{\widthof{$\scriptstyle\oplus$}}{!}{$\colorboxplus$}}}}
-      {\vcenter{\hbox{\resizebox{\widthof{$\scriptscriptstyle\oplus$}}{!}{$\colorboxplus$}}}}
-  }\displaylimits 
-}
+\usepackage{graphicx}          % Include this line if your 
+                               % document contains figures,
+%\usepackage[dvips]{epsfig}    % or this line, depending on which
+                               % you prefer.
+
+
+% ---------------------- Calligrapic
+\newcommand{\Ac}{\mathcal{A}}
+\newcommand{\Bc}{\mathcal{B}}
+\newcommand{\Cc}{\mathcal{C}}
+\newcommand{\Dc}{\mathcal{D}}
+\newcommand{\Ec}{\mathcal{E}}
+\newcommand{\Fc}{\mathcal{F}}
+\newcommand{\Gc}{\mathcal{G}}
+\newcommand{\Hc}{\mathcal{H}}
+\newcommand{\Ic}{\mathcal{I}}
+\newcommand{\Jc}{\mathcal{J}}
+\newcommand{\Kc}{\mathcal{K}}
+\newcommand{\Lc}{\mathcal{L}}
+\newcommand{\Mc}{\mathcal{M}}
+\newcommand{\Nc}{\mathcal{N}}
+\newcommand{\Oc}{\mathcal{O}}
+\newcommand{\Pc}{\mathcal{P}}
+\newcommand{\Qc}{\mathcal{Q}}
+\newcommand{\Rc}{\mathcal{R}}
+\newcommand{\Sc}{\mathcal{S}}
+\newcommand{\Tc}{\mathcal{T}}
+\newcommand{\Uc}{\mathcal{U}}
+\newcommand{\Vc}{\mathcal{V}}
+\newcommand{\Wc}{\mathcal{W}}
+\newcommand{\Xc}{\mathcal{X}}
+\newcommand{\Yc}{\mathcal{Y}}
+\newcommand{\Zc}{\mathcal{Z}}
+
+% -------------------------- Script
+\newcommand{\As}{\mathscr{A}}
+\newcommand{\Bs}{\mathscr{B}}
+\newcommand{\Cs}{\mathscr{C}}
+\newcommand{\Ds}{\mathscr{D}}
+\newcommand{\Es}{\mathscr{EL}}
+\newcommand{\Fs}{\mathscr{F}}
+\newcommand{\Gs}{\mathscr{G}}
+\newcommand{\Hs}{\mathscr{H}}
+\newcommand{\Is}{\mathscr{I}}
+\newcommand{\Js}{\mathscr{J}}
+\newcommand{\Ks}{\mathscr{K}}
+\newcommand{\Ls}{\mathscr{L}}
+\newcommand{\Ms}{\mathscr{M}}
+\newcommand{\Ns}{\mathscr{N}}
+\newcommand{\Os}{\mathscr{O}}
+\newcommand{\Ps}{\mathscr{P}}
+\newcommand{\Qs}{\mathscr{Q}}
+\newcommand{\Rs}{\mathscr{R}}
+\newcommand{\Ss}{\mathscr{S}}
+\newcommand{\Ts}{\mathscr{T}}
+\newcommand{\Us}{\mathscr{U}}
+\newcommand{\Vs}{\mathscr{V}}
+\newcommand{\Ws}{\mathscr{W}}
+\newcommand{\Xs}{\mathscr{X}}
+\newcommand{\Ys}{\mathscr{Y}}
+\newcommand{\Zs}{\mathscr{Z}}
+
+% -------------------------- Bold
+\newcommand{\Ab}{\mathbb{A}}
+\newcommand{\Bb}{\mathbb{B}}
+\newcommand{\Cb}{\mathbb{C}}
+\newcommand{\Db}{\mathbb{D}}
+\newcommand{\Eb}{\mathbb{E}}
+\newcommand{\Fb}{\mathbb{F}}
+\newcommand{\Gb}{\mathbb{G}}
+\newcommand{\Hb}{\mathbb{H}}
+\newcommand{\Ib}{\mathbb{I}}
+\newcommand{\Jb}{\mathbb{J}}
+\newcommand{\Kb}{\mathbb{K}}
+\newcommand{\Lb}{\mathbb{L}}
+\newcommand{\Mb}{\mathbb{M}}
+\newcommand{\Nb}{\mathbb{N}}
+\newcommand{\Ob}{\mathbb{O}}
+\newcommand{\Pb}{\mathbb{P}}
+\newcommand{\Qb}{\mathbb{Q}}
+\newcommand{\Rb}{\mathbb{R}}
+\newcommand{\Sb}{\mathbb{S}}
+\newcommand{\Tb}{\mathbb{T}}
+\newcommand{\Ub}{\mathbb{U}}
+\newcommand{\Vb}{\mathbb{V}}
+\newcommand{\Wb}{\mathbb{W}}
+\newcommand{\Xb}{\mathbb{X}}
+\newcommand{\Yb}{\mathbb{Y}}
+\newcommand{\Zb}{\mathbb{Z}}
+
+% ------------------------- Fraktur
+\newcommand{\Af}{\mathfrak{A}}
+\newcommand{\Bf}{\mathfrak{B}}
+\newcommand{\Cf}{\mathfrak{C}}
+\newcommand{\Df}{\mathfrak{D}}
+\newcommand{\Ef}{\mathfrak{E}}
+\newcommand{\Ff}{\mathfrak{F}}
+\newcommand{\Gf}{\mathfrak{G}}
+\newcommand{\Hf}{\mathfrak{H}}
+\newcommand{\Ifr}{\mathfrak{I}}
+\newcommand{\Jf}{\mathfrak{J}}
+\newcommand{\Kf}{\mathfrak{K}}
+\newcommand{\Lf}{\mathfrak{L}}
+\newcommand{\Mf}{\mathfrak{M}}
+\newcommand{\Nf}{\mathfrak{N}}
+\newcommand{\Of}{\mathfrak{O}}
+\newcommand{\Pf}{\mathfrak{P}}
+\newcommand{\Qf}{\mathfrak{Q}}
+\newcommand{\Rf}{\mathfrak{R}}
+\newcommand{\Sf}{\mathfrak{S}}
+\newcommand{\Tf}{\mathfrak{T}}
+\newcommand{\Uf}{\mathfrak{U}}
+\newcommand{\Vf}{\mathfrak{V}}
+\newcommand{\Wf}{\mathfrak{W}}
+\newcommand{\Xf}{\mathfrak{X}}
+\newcommand{\Yf}{\mathfrak{Y}}
+\newcommand{\Zf}{\mathfrak{Z}}
+
+% -------------------------- Conditional expectations etc
+\newcommand{\CE}{\mathbb{E}|}
+\newcommand{\SR}{\mathbb{S}|}
+\newcommand{\SE}{\mathbb{J}|}
+
+\newcommand{\cov}{{\mathbb{Cov}}}
+\newcommand{\var}{{\mathbb{Var}}}
+
+% -------------------------- Reduced operators 
+\newcommand{\ro}{\mathcal{R}_0}
+\newcommand{\eo}{\mathcal{J}_0}
+\newcommand{\rs}{\mathcal{R}}
+\newcommand{\es}{\mathcal{J}}
+
+% ------------------------ Numbers
+\newcommand{\um}{\frac{1}{2}}
+\newcommand{\one}{\mathbb{1}}
+\newcommand{\zero}{\mathbb{0}}
+
+\newcommand{\onev}{{\bm 1}}
+\newcommand{\zerov}{{\bm 0}}
+
+% ----------------------- Functions and operations
+\newcommand{\im}{{\rm Im}}
+\newcommand{\id}{{\rm Id}}
+\newcommand{\fix}{{\rm fix}}
+\newcommand{\ad}{{\rm ad}}
+\newcommand{\bin}{{\rm bin}}
+\newcommand{\tr}{{\rm tr}}
+\newcommand{\diag}{{\rm diag}}
+\newcommand{\Span}{{\rm span}}
+\newcommand{\cl}{{\rm cl}}
+\newcommand{\spec}{{\rm spec}}
+\newcommand{\idem}{ {\rm idem}}
+\newcommand{\res}{{\rm res}}
+\newcommand{\supp}{{\rm supp}}
+\newcommand{\lind}{\mathcal{L}}
+\newcommand{\Alg}{{\rm alg}}
+\newcommand{\img}{{\rm Im}}
+\newcommand{\lie}{{\rm Lie}}
+
+\DeclareMathOperator{\rank}{rank}
+
+\newcommand{\comp}{{\sim}}
+\newcommand{\zentrum}{\mathcal{Z}}
+
+
+% -------------------------- Inner products and co
+\newcommand{\ket}[1]{\left| #1 \right>}
+\newcommand{\bra}[1]{\left< #1 \right|}
+\newcommand{\norm}[1]{\left|\left| #1 \right|\right|}
+\newcommand{\inner}[2]{\left< #1,#2 \right>}
+\newcommand{\Outer}[2]{ \left|#1\right>\left<#2\right| }
+\newcommand{\expect}[1]{\left< #1 \right>}
+\newcommand{\braket}[2]{\left< #1 \middle\vert #2 \right>}
+\newcommand{\ketbra}[2]{\left\vert #1 \middle>\middle< #2 \right\vert}
+\newcommand{\virg}[1]{\lq\lq{} #1\ignorespacesafterend\rq\rq}
+
+% \usepackage{mathabx}
+% \renewcommand{\check}{\widecheck}
+% \renewcommand{\bar}{\overline}
+% \renewcommand{\Tilde}{\widetilde}
+% \renewcommand{\Hat}{\widehat}
+
+% ------------------------ Comments
+\newcommand{\blue}[1]{{\color{blue} #1}}
+\newcommand{\red}[1]{{\color{red} #1}}
+\newcommand{\green}{\color{teal}}
+
+\definecolor{darkviolet}{rgb}{0.58, 0.0, 0.83}
+\definecolor{lavender}{rgb}{0.45, 0.31, 0.59}
+
+\newcommand{\TG}[1]{{\color{OrangeRed}#1}}
+
+
+
 
 \begin{document}
 
-\title{Computing time-dependent reduced models for classical and quantum dynamics}
+\begin{frontmatter}
+\title{Computing time-dependent reduced models for classical and quantum dynamics} % Title, preferably not more 
+                                                % than 10 words.
 
-\author{Tommaso Grigoletto}
-\affiliation{Department of Information Engineering, University of Padova, Italy} 
+% \thanks[footnoteinfo]{This paper was not presented at any IFAC 
+% meeting. Corresponding author M.~T.~Cicero. Tel. +XXXIX-VI-mmmxxi. 
+% Fax +XXXIX-VI-mmmxxv.}
 
-\date{\today}
+\author[unipd]{Tommaso Grigoletto}
+\ead{tommaso.grigoletto@unipd.it}
+\address[unipd]{Department of Information Engineering, University of Padova, Italy}  
+          
+\begin{keyword}                           % Five to ten keywords,  
+Identification and model reduction; Time-varying systems; Time-invariant               % chosen from the IFAC 
+\end{keyword}                             % keyword list or with the 
+                                          % help of the Automatica 
+                                          % keyword wizard
 
-\begin{abstract}
+
+\begin{abstract}                          % Abstract of not more than 200 words.
     This paper introduces a novel method for approximating the dynamics of a large autonomous system projected onto a fixed subspace. The core contribution is a novel recursive algorithm to construct an effective time-dependent generator that is polynomial in the time variable, ensuring accuracy for short time scales. The derivation is based on the Taylor expansion of the exponential map and a new result for computing the time-ordered exponential of polynomial generators.
     This work is motivated by the challenge of deriving time-convolutionless master equations in quantum physics and the proposed method offers an alternative to typical derivations based on expansions in the coupling strength. 
-    The resulting approximation is accurate for small times, does not require a weak-coupling assumption, performs better than a truncation of the exponential map at low orders, and crucially, guarantees a completely positive and trace-preserving map at the lowest orders. The proposed method is validated against several prototypical models: a dephasing spin-boson model, a central spin model, and an Ising spin chain.
+    The resulting approximation is accurate for small times, does not require a weak-coupling assumption, performs better than a truncation of the exponential map at low orders, and crucially, guarantees a completely positive and trace-preserving map at the lowest orders. The proposed method is validated against prototypical models: a central spin model and an Ising spin chain.
 \end{abstract}
 
-\maketitle
+\end{frontmatter}
 
 \section{Introduction}
 Whenever a dynamical model is too large to be simulated efficiently, one should resort to model reduction techniques to find a smaller model that is simulatable and that retains fundamental characteristics of the original system. A dominant approach in control systems theory -- including, for example, minimal realization techniques \cite{rosenbrock1970state}, balanced truncation \cite{antoulas,gugercin2004survey}, and moment matching \cite{astolfi_moment_matching,padoanmomentmatching} -- consists of finding a low-dimensional subspace where to project the dynamics, obtaining a linear time-invariant (LTI) model. This work considers a different approach: the space onto which the dynamics is projected is assumed to be {\em given a priori and fixed}, and, instead, the dynamics is approximated by seeking a linear time-varying (LTV) model. 
@@ -76,7 +275,7 @@ It is important to point out that the method proposed in this work is not intend
     \item In Sec. \ref{sec:problem_setting} the problem treated in this work is defined rigorously. The known formal solution of the problem is derived in detail using the Nakajima-Swanzig equations \cite{nakajima,zwanzig},  and the key difficulties associated with computing this LTV model are explained.  
     \item In Sec. \ref{sec:time_ordered} the main contribution of the paper is presented: Theorem \ref{thm:approx} derives the polynomial approximation of the formal LTV model and the recursive equation that determines its coefficients. This result is based on Theorem \ref{thm:time_ordered_expansion} where a novel method to compute the time-ordered exponential is derived. The reduction procedure is also validated on a linear model and compared against the truncation of the exponential series. 
     \item Sec. \ref{sec:cptp_second_order} focuses on the application of the proposed reduction procedure to quantum dynamical models. The proposed method is connected and compared with the typical physics approach for the approximation of TCL ME which is based on the expansion of the coupling strength. The connections between the recursive formula obtained here and other similar recursive equations known in the physics literature \cite{nestmann2019time,cerrillo2014non,cygorek2025timenonlocalversustimelocallongtime,gasbarri2018recursive} are discussed, highlighting how the expansion in $t$ greatly simplifies the associated calculations. Most importantly, leveraging a few recent results \cite{grigoletto2024exact,grigoletto2025quantummodelreductioncontinuoustime} it is proven that when the original generatos is purely Hamiltonian, the proposed approximation at first and second order provides a CPTP two-parameter semigroup.
-    \item In Sec. \ref{sec:applications} the proposed procedure is validated against several prototypical quantum examples: a dephasing spin boson model, a central spin model, and and Ising spin chain. Note that the majority of the applications presented in this work are in the context of quantum physics since, up to this point, this is where these LTV-based model reduction techniques have found most applications.  
+    \item In Sec. \ref{sec:applications} the proposed procedure is validated against prototypical quantum examples: a central spin model and an Ising spin chain. Note that the majority of the applications presented in this work are in the context of quantum physics since, up to this point, this is where these LTV-based model reduction techniques have found most applications.  
 \end{itemize}
 Throughout the paper, pedagogical examples are included to intuitively explain the most involved proofs. Furthermore, both the strengths and weaknesses of the proposed approximation procedure are highlighted in detail, namely: the recursive formula used to compute the terms of the generators at different orders makes the procedure numerically easier to access at higher orders than the alternatives; allows for an initial model that is in Lindblad form (not only purely Hamiltonian); does not require the model to be put in rotating frame; and does not rely on a weak coupling assumption, thus allowing to study systems in strong coupling regimes. On the other hand, the proposed reduction procedure relies on an expansion in time and thus provides a good approximation only for small times. Although this aspect is limiting, similar restrictions also hold in the well-known approximations of the TCL ME proposed by \cite{shibata_generalized_1977}.
 
@@ -135,7 +334,7 @@ Our aim is then to construct $F_t$ so that $z_t\approx y_t$ or, in other words, 
 
 \subsection{Reduced and exact time-dependent dynamics}
 
-Before moving on to the method proposed in this work for computing the time-dependent generator $F_t$ we shall discuss the common derivation found in the physics literature to solve the problem at hand \cite{Tokieda_2025, chaturvedi_time-convolutionless_1979, nestmann_time-convolutionless_2019, shibata_generalized_1977}. The derivation is particularly elegant hence we report it here for the interested reader. 
+Before moving on to the method proposed in this work for computing the time-dependent generator $F_t$ we shall discuss the common derivation found in the physics literature to solve the problem at hand \cite{Tokieda_2025,chaturvedi_time-convolutionless_1979,nestmann_time-convolutionless_2019,shibata_generalized_1977}. The derivation is particularly elegant hence we report it here for the interested reader. 
 
 Dividing the evolution of $x_t$ in the evolution of $P x_t$ and that of $Q x_t$ we have 
 \begin{align}
@@ -189,10 +388,10 @@ We refer the reader to Sec. \ref{sec:connection_with_literature} for further con
 \label{sec:time_ordered}
 
 In this section we derive the key result of this work: a method to approximate the time-dependent generator defined in Eq.\eqref{eq:tcl_me_reduced}, $F_t$. The derivation that follows is based on the following observation. 
-\begin{proposition}
+\begin{prop}
     Let $M_t$ be the time-dependent operator defined in Eq. \eqref{eq:M_t} and let $F_t$ be the time-dependent generator defined in Eq. \eqref{eq:tcl_me_reduced}. Then, for every $t$ such that $M_t$ is invertible, $F_t$ is analytic in $t$, i.e. 
     \[F_t = \sum_{k=0}^{+\infty} t^k F_{(k+1)}.\]
-\end{proposition}
+\end{prop}
 \begin{proof}
     We can start by observing that the function $e^{QLQt}QLPe^{-Lt}$ is the product of two analytic functions in $t$ hence it is analytic in $t$. Furthermore, as the integral of an analytic function is also analytic, see, e.g. \cite{bourchtein2021analytic} we have that $M_t$  is also analytic in $t$. Finally, as the inverse of an analytic function $f(t)$ is analytic where $f(t)\neq0$, we have that $F_t$ is also analytic in $t$ whenever $M_t$ is invertible. 
 \end{proof}
@@ -200,7 +399,7 @@ Note that we label the coefficients in the power series starting from $1$ instea
 \[F_{t,N} \equiv \sum_{k=0}^N t^k F_{(k+1)}.\]
 Other than an obvious computational benefit introduced by computing the terms $F_{(k)}$ only to order $N$, the assumption that the generator is polynomial in the time variable greatly simplifies the computation of the time-ordered exponential $\Tb e^{\int_0^t F_{s,N} ds}$ as shown in the next key result. 
 
-\begin{theorem}
+\begin{thm}
 \label{thm:time_ordered_expansion}
     Let us assume that \(F_{t,N} = \sum_{k=0}^{N} t^k F_{(k+1)}\). 
     Then the time-ordered exponential can be written as
@@ -214,7 +413,7 @@ Other than an obvious computational benefit introduced by computing the terms $F
         \label{eqn:E_k}
     \end{equation}
     and where we used the convention $F_{(k)}=0$ for all $k>N$.
-\end{theorem}
+\end{thm}
 Proof of this result and an explanatory example are given in Appendix \ref{sec:thechnical_results:time_ordered}.
 
 Note that Eq. \eqref{eqn:E_k} provides a closed formula for the coefficients $E_{(k)}$ of the expansion of $\Tb e^{\int_0^t F_{s,N} ds}$ as a function of the coefficients $F_{(k)}$. Furthermore, only the terms $\{E_{(\ell)}\}_{\ell=1}^{k-1}$ appear in Eq. \eqref{eqn:E_k}, which means that this equation can be used iteratively to compute each $E_{(k)}$. 
@@ -226,7 +425,7 @@ Theorem \ref{thm:time_ordered_expansion} provides the main intuition on how to c
 \begin{figure*}[th]
     \centering
     \begin{subfigure}{0.48\textwidth}
-        \includegraphics[width=\linewidth]{norm_bound.pdf}
+        \includegraphics[width=\textwidth]{norm_bound.pdf}
     \end{subfigure}
     \begin{subfigure}{0.48\textwidth}
         \includegraphics[width=\linewidth]{E_norm_bound.pdf}
@@ -237,7 +436,7 @@ Theorem \ref{thm:time_ordered_expansion} provides the main intuition on how to c
 %
 %
 
-\begin{theorem}
+\begin{thm}
 \label{thm:approx}
 Let us define 
 \begin{equation}
@@ -254,7 +453,7 @@ Then:
 R e^{L t}J - \Tb e^{\int_0^t F_{s,N} ds} = O(t^{N+1}).
 \label{eqn:time_approx}
 \end{align}
-\end{theorem}
+\end{thm}
 \begin{proof}%[Proof of Theorem \ref{thm:approx}]
 First of all we can use Theorem \ref{thm:time_ordered_expansion} to write 
 \[\Tb e^{\int_0^t F_{s,N} ds} = \sum_{f=0}^{+\infty} t^k E_{(k)}\]
@@ -302,7 +501,8 @@ Let then $A$ be a random uniform matrix in $\Cb^{n\times n}$, i.e. $[A]_{i,j}\si
 The dynamic's generator $L\in\Cb^{n\times n}$ is then obtained as $L = \frac{1}{2}\frac{B}{\norm{B}_{op}}$ where $\norm{\cdot}_{op}$ denotes the operator norm.
 This ensures that $L$ is simply stable and has operator norm $\norm{L}_{op}=\um$. 
 
-The projector $P$ is then constructed through $R = \left[\begin{array}{c|c} \one_{m\times m} & 0_{m\times n-m} \end{array}\right]$ and $J = R^\dag$ to obtain \[P = \left[\begin{array}{c|c} \one_{m\times m} & 0_{m\times n-m} \\\hline 0_{m \times n-m } & 0_{n-m\times n-m} \end{array}\right].\]
+The projector $P$ is then constructed through $R = \left[\begin{array}{c|c} \one_{m\times m} & 0_{m\times n-m} \end{array}\right]$ and $J = R^\dag$ and $P = RJ$. 
+% to obtain \[P = \left[\begin{array}{c|c} \one_{m\times m} & 0_{m\times n-m} \\\hline 0_{m \times n-m } & 0_{n-m\times n-m} \end{array}\right].\]
 
 By using Eq. \eqref{eqn:F_k} we can then compute the terms $F_{(k)}$ iteratively for $k=1,\dots,N$. Fig. \ref{fig:norm_bound} (left) shows both the Hilbert-Schmidt and operator norm of the terms $F_{(k)}$ for $k=1,20$. Interestingly, the Hilbert-Schmidt norm, $\norm{F_{(k)}}_{HS}$, is bounded by $\frac{\norm{L}_{HS}^k}{k!}$, indicating that the series $F_{t,N}$ should be converging for $N\to\infty$. Curiously, the same does not hold for the operator norm.
 Fig. \ref{fig:norm_bound} (right) instead shows the norm of the terms $E_{(k)}$ where we fixed $N=20$ and $F_{(k)}=0$ $\forall k>20$. Interestingly, for $k\leq N$ $\norm{E_{(k)}}$ is bounded by $\frac{\norm{L}^k}{k!}$ while for $k>N$ this is no longer the case.  
@@ -326,7 +526,7 @@ In this section, we apply the results derived in the Sec. \ref{sec:time_ordered}
 
 \subsection{The reduction problem for quantum dynamical models}
 \label{sec:quantum_connection}
-Let us consider a quantum system defined on a Hilbert space $\Hc$, and let $\Bf(\Hc)$ denote the set of bounded operators acting on $\Hc$. Unless differently specified, We only consider finite-dimensional systems, i.e. $\dim(\Hc)<\infty$, $\Hc\simeq\Cb^n$ and $\Bf(\Hc)\simeq \Cb^{n\times n}.$
+Let us consider a quantum system defined on a Hilbert space $\Hc$, and let $\Bf(\Hc)$ denote the set of bounded operators acting on $\Hc$. In this work, we only consider finite-dimensional systems, i.e. $\dim(\Hc)<\infty$, $\Hc\simeq\Cb^n$ and $\Bf(\Hc)\simeq \Cb^{n\times n}.$
 The state of such a system is described by a density operator $\rho\in\Df(\Hc)$ with $\Df(\Hc) = \{\rho\in\Bf(\Hc)|\, \rho=\rho^\dag\geq0,\,\tr\rho=1\}$. Here, we assume that the state of the system evolves according to the Von-Neumann master equation 
 \begin{equation}
     \dot{\rho}_t = \Lc(\rho_t)
@@ -343,7 +543,7 @@ In the following, we will say that a super-operator is of \textit{Lindblad-type}
 Note that in general, in the derivation of TCL ME \cite{shibata_generalized_1977,chaturvedi_time-convolutionless_1979}, the initial ‘‘big'' model is considered to be Hamiltonian, i.e. $\Lc(\cdot)=-i[H,\cdot]$. However, mathematically, there is no reason to restrict to this case; hence, in this work, we start with the general assumption that $\Lc$ is a generator of Lindblad form and then focus on the Hamiltonian case when necessary.
 
 In many situations of interest in quantum physics, relevant projectors are represented by CPTP ones. We thus assume to be given a CPTP, not necessarily orthogonal (w.r.t. $\inner{\cdot}{\cdot}_{HS}$), projector $\Pc:\Bf(\Hc)\to\Bf(\Hc)$, $\Pc^2=\Pc$, whose image will be denoted by $\Vs \equiv {\rm Im}\Pc$. This provides a generalization to the superoperator projector setting considered by \cite{breuer2006,breuer2007}.  Furthermore, for the sake of simplicity, we assume that $\Pc$ admits\footnote{Note that this assumption is made for simplicity of presentation and can easily be lifted by restricting onto the support of ${\rm Im}\Pc$, see e.g. \cite{wolf2012quantum}.} a full rank fixed point, i.e. $\exists\rho\in\Df(\Hc)$, $\rho>0$ such that $\Pc(\rho)=\rho$. 
-As we shall see in more detail later (in Sec.\ref{sec:cptp_first_order}) such a projector is, in fact, a conditional expectation in quantum probability theory \cite{petz2007quantum,blackadar2006operator} and enjoys some useful and well known properties \cite{lindblad1999general, wolf2012quantum, ticozzi2017alternating, bialonczyk2018application, blume2010information,grigoletto2024exact,wolf2010inverseeigenvalueproblemquantum}. However, for now it is sufficient to know that $\Pc$ can be decomposed into two factors $\Pc = \Jc\Rc$ which take the name of reduction and injection maps $\Rc:\Bf(\Hc)\to\Bf(\Kc)$ and $\Jc:\Bf(\Kc)\to\Bf(\Hc)$ such that $\Rc\Jc = \Ic_\Kc$ the identity superoperator, ${\rm Im}\Jc = \Vs$ ${\rm Im}\Rc=\As$ and where $\As\subseteq\Bf(\Kc)$ is a $*$-subalgebra of $\Bf(\Kc)$ for some Hilbert space $\Kc$, $\dim(\Kc)\leq\dim(\Hc)$.
+As we shall see in more detail later (in Sec.\ref{sec:cptp_first_order}) such a projector is, in fact, a conditional expectation in quantum probability theory \cite{petz2007quantum,blackadar2006operator} and enjoys some useful and well known properties \cite{lindblad1999general,wolf2012quantum,ticozzi2017alternating,bialonczyk2018application,blume2010information,grigoletto2024exact,wolf2010inverseeigenvalueproblemquantum}. However, for now it is sufficient to know that $\Pc$ can be decomposed into two factors $\Pc = \Jc\Rc$ which take the name of reduction and injection maps $\Rc:\Bf(\Hc)\to\Bf(\Kc)$ and $\Jc:\Bf(\Kc)\to\Bf(\Hc)$ such that $\Rc\Jc = \Ic_\Kc$ the identity superoperator, ${\rm Im}\Jc = \Vs$ ${\rm Im}\Rc=\As$ and where $\As\subseteq\Bf(\Kc)$ is a $*$-subalgebra of $\Bf(\Kc)$ for some Hilbert space $\Kc$, $\dim(\Kc)\leq\dim(\Hc)$.
 
 To provide some intuition about these mathematical objects, we anticipate the reduction and injection maps we are going to use in the applications of Sec.\,\ref{sec:applications}:
 \begin{itemize}
@@ -389,8 +589,8 @@ The main drawback introduced by the expansion in the time variable $t$ is the fa
 \subsection{Complete positivity of the first order}
 \label{sec:cptp_first_order}
 
-In this section, we recall relevant known results about CPTP projectors, their images, and reduced dynamics onto distorted algebras from the literature \cite{lindblad1999general, wolf2012quantum, ticozzi2017alternating, bialonczyk2018application, blume2010information,grigoletto2024exact,wolf2010inverseeigenvalueproblemquantum}. The consequences of the assumptions we made about the projector $\Pc$ are summarized in the following proposition. 
-\begin{proposition}
+In this section, we recall relevant known results about CPTP projectors, their images, and reduced dynamics onto distorted algebras from the literature \cite{lindblad1999general,wolf2012quantum,ticozzi2017alternating,bialonczyk2018application,blume2010information,grigoletto2024exact,wolf2010inverseeigenvalueproblemquantum}. The consequences of the assumptions we made about the projector $\Pc$ are summarized in the following proposition. 
+\begin{prop}
 \label{prop:structure_of_fixed_points}
     Let $\Pc$ be a CPTP projector with a full rank fixed point $\bar{\rho}>0$, $\Pc(\bar{\rho})=\bar{\rho}$ and let $\Vs$ be its image, i.e. $ \Vs \equiv {\rm Im}\Pc \subseteq\Bf(\Hc)$. 
     Then there exist a decomposition of the Hilbert space \[\Hc = \bigoplus_k (\Hc_{F,k}\otimes\Hc_{G,k}),\] a unitary operator $U\in\Bf(\Hc)$, and a set of density operators $\tau_k\in\Df(\Hc_{G,k})$ such that 
@@ -406,8 +606,8 @@ In this section, we recall relevant known results about CPTP projectors, their i
         \label{eqn:state_ext_blocks}
     \end{align}
     and is orthogonal with respect to the inner product $\inner{X}{Y}_{\sigma,\lambda} = \tr[X^\dag \sigma^\lambda Y \sigma^{1-\lambda}]$ for $\lambda\in[0,1]$.
-\end{proposition}
-Proof of this result can be found in \cite{lindblad1999general} and \cite{wolf2010inverseeigenvalueproblemquantum,wolf2012quantum,tit2023, ticozzi2017alternating, johnson2015general}. Note that projectors of this type take the name of state extensions and are the dual of conditional expectations \cite{petz2007quantum,blackadar2006operator}. Furthermore, note that a $*$-algebra closed with respect to a modified product often takes the name of \textit{distorted algebra} \cite{blume2010information}, while the block structure provided in Eq. \eqref{eq:wedderburn_decomposition} takes the name of \textit{Wedderburn decomposition}. 
+\end{prop}
+Proof of this result can be found in \cite{lindblad1999general} and \cite{wolf2010inverseeigenvalueproblemquantum,wolf2012quantum,tit2023,ticozzi2017alternating,johnson2015general}. Note that projectors of this type take the name of state extensions and are the dual of conditional expectations \cite{petz2007quantum,blackadar2006operator}. Furthermore, note that a $*$-algebra closed with respect to a modified product often takes the name of \textit{distorted algebra} \cite{blume2010information}, while the block structure provided in Eq. \eqref{eq:wedderburn_decomposition} takes the name of \textit{Wedderburn decomposition}. 
 
 The previous result provides us with a structure for the image of a  CPTP projection whenever there exists a full rank state $\bar{\rho}$ such that $\Pc(\bar{\rho}) = \bar{\rho}$. From this structure one can observe that a distorted algebra $\Vs$ is isomorphic to a smaller representation which we denote $\As$ where the weighted copies are removed, i.e. $\As \equiv \bigoplus_k \Bf(\Hc_{F,k})$. This allows us to find the two factors $\Rc:\Bf(\Hc)\to{\As}$ and $\Jc:{\As}\to\Bf(\Hc)$ such that, $\Rc\Jc = \Ic_{{\As}}$ and $\Pc = \Jc\Rc$. 
 Furthermore, one can prove \cite{grigoletto2024exact} that these two factors can be chosen to be CPTP, i.e. for all $X\in\Bf(\Hc)$
@@ -422,12 +622,12 @@ and for all $\check{X}\in\check{\As}$, $\check{X}=\bigoplus_k X_{F,k}$,
 \end{equation}
 
 The reduction and injection maps given in equations \eqref{eqn:reduction} and \eqref{eqn:injection} then allow us to compute the reduced dynamics $ \Rc\Lc\Jc$ restricted to the algebra ${\As}$. Then we can prove that the reduced generator $\check{\Lc}$ is GKLS by leveraging the structure of the reduction and injection maps. Here we recall \cite[Theorem 4]{grigoletto2024exact} for completeness.
-\begin{theorem}
+\begin{thm}
 \label{thm:Lindblad_reduction}
 Let $\Pc$ be a CPTP projection with a full rank fixed point, let $\mathscr{V}$ be its image $\Vs = {\rm Im }\Pc \subseteq \mathcal{B(H)}$, and let $\Rc$ and $\Jc$ denote the CPTP factorization of $\Pc = \Jc\Rc$, as defined in Eq.\,\eqref{eqn:reduction} and \eqref{eqn:injection}. Then for any Lindblad generator $\Lc$, its restriction to ${\As}$, 
 $\Rc\Lc\Jc,$ 
 is also a Lindblad generator, that is, $\Rc\Lc\Jc:\As\to\As$ and $\{e^{\check{\Lc}t}\}_{t\geq 0}$ is a quantum dynamical semigroup. 
-\end{theorem}
+\end{thm}
 Note that this theorem only proves that $\Rc\Lc\Jc$ is of Lindblad type. In order to compute the reduced Hamiltonian and noise operators, one can use the procedure described in \cite[Appendix]{grigoletto2025quantummodelreductioncontinuoustime}.
 This result allows us to state that, under the assumptions described above, the approximation at first order $\Fc_{t,1} = \Rc\Lc\Jc$ is of Lindblad type and thus it is guaranteed to give a CPTP semigroup for all times.    
 
@@ -442,154 +642,153 @@ The next result is based on the fact that the squared of a purely Hamiltonian ge
     \label{eqn:square_hamiltonian}
 \end{align}
 This fact allows us to prove the next result.
-\begin{theorem}
+\begin{thm}
 \label{thm:cptp_second_order}
     Under the assumptions of Theorem \ref{thm:Lindblad_reduction} we have that $\Fc_{(2)} = \Rc\Lc^2\Jc - (\Rc \Lc \Jc)^2$ is of Lindblad-type and for $\Fc_{t,2} \equiv \Fc_{(1)} + t \Fc_{(2)}$ we have that $\Tb e^{\int_0^t \Fc_{s,2} ds}$ forms a CPTP semigroup for all $t\geq0$. 
-\end{theorem}
+\end{thm}
 \begin{proof}
     By leveraging \cite[Proposition 5]{grigoletto2024exact} we have that $\Rc\Lc\Jc(\check{\rho}) = -i[\check{H},\check{\rho}]$ where $\check{H} = \Jc^\dag(H)$ hence, using equation \eqref{eqn:square_hamiltonian} we obtain $(\Rc\Lc\Jc)^2(\check{\rho}) = \Dc_{\sqrt{2}\check{H}}(\check{\rho})$. On the other hand, by leveraging \cite[Proposition 6 and Proposition 7]{grigoletto2025quantummodelreductioncontinuoustime}, we have that $\Rc \Dc_{\sqrt{2}H}\Jc(\check{\rho}) = \sum_{\check{C}\in\Xc(\sqrt{2}H)} \Dc_{\check{C}}(\check{\rho})$ for a set of operators $\Xc(\sqrt{2}H)\subset \Bf(\Kc)$. Importantly, by \cite[Corollary 4]{grigoletto2025quantummodelreductioncontinuoustime}, we have that $\Jc^\dag(H)\in\Xc(\sqrt{2}H)$ and thus we can write $\Rc \Dc_{\sqrt{2}H}\Jc(\check{\rho}) = \sum_{\check{C}\in\Xc(\sqrt{2}H)/\{\sqrt{2}\check{H}\}} \Dc_{\check{C}}(\check{\rho}) + \Dc_{\sqrt{2}\check{H}}(\check{\rho})$ since $\sqrt{2}\check{H} = \Jc^\dag(\sqrt{2}H)$. Then, by combining these two results we obtain 
     \[ \Fc_{(2)} = \Rc\Lc^2\Jc - (\Rc \Lc \Jc)^2 = \sum_{\check{C}\in\Xc(\sqrt{2}H)/\{\sqrt{2}\check{H}\}} \Dc_{\check{C}}(\check{\rho}) \]
     which is the sum of a set of GKLS, purely dissipative generators and thus of Lindblad type. Combining this with Theorem \ref{thm:Lindblad_reduction} it trivially follows that $\Fc_{t,2}$ is of Lindblad type for all $t\geq0$.
 \end{proof}
-\subsection{Second order in the special case of bipartite systems}
-\label{sec:second_order_bipartite}
-Since the proof of Theorem \ref{thm:cptp_second_order} is based on a few very technical results, here we want to present an pedagogical derivation of the same result in the special case of bipartite quantum systems. Note that this derivation is quite relevant in practice as it focuses on the most studied case of a bipartite system, but the cases included in the assumptions of Theorem \ref{thm:cptp_second_order} are more general. This exact case will be the focus of the two applications of interest studied in Sec \ref{sec:spin_boson} and \ref{sec:central_spin}.
+% \subsection{Second order in the special case of bipartite systems}
+% \label{sec:second_order_bipartite}
+% Since the proof of Theorem \ref{thm:cptp_second_order} is based on a few very technical results, here we want to present an pedagogical derivation of the same result in the special case of bipartite quantum systems. Note that this derivation is quite relevant in practice as it focuses on the most studied case of a bipartite system, but the cases included in the assumptions of Theorem \ref{thm:cptp_second_order} are more general. This exact case will be the focus of the two applications of interest studied in Sec \ref{sec:spin_boson} and \ref{sec:central_spin}.
 
-Let us assume that $\Hc = \Hc_S\otimes\Hc_E$ and let assume that the CPTP projector $\Pc$ is given by the $\Pc(\cdot) = \tr_E(\cdot)\otimes\tau$ for some full rank state $\tau\in\Df(\Hc_E)$. The projector $\Pc$ is then factorized into the reduction map $\Rc(\cdot) = \tr_E(\cdot)$ and the injection map $\Jc(\cdot) = \cdot\otimes \tau$. 
-In line with the assumptions of this section we assume that $\Lc(\cdot) = -i \ad_H(\cdot)$. Given the bipartite structure of the Hilbert space $\Hc$ we can always write $H = \sum_k S_k \otimes E_k$ for two sets of Hermitian operators $\{S_k\}\subset\Bf(\Hc_S)$ and $\{E_k\}\subset\Bf(\Hc_E)$.
+% Let us assume that $\Hc = \Hc_S\otimes\Hc_E$ and let assume that the CPTP projector $\Pc$ is given by the $\Pc(\cdot) = \tr_E(\cdot)\otimes\tau$ for some full rank state $\tau\in\Df(\Hc_E)$. The projector $\Pc$ is then factorized into the reduction map $\Rc(\cdot) = \tr_E(\cdot)$ and the injection map $\Jc(\cdot) = \cdot\otimes \tau$. 
+% In line with the assumptions of this section we assume that $\Lc(\cdot) = -i \ad_H(\cdot)$. Given the bipartite structure of the Hilbert space $\Hc$ we can always write $H = \sum_k S_k \otimes E_k$ for two sets of Hermitian operators $\{S_k\}\subset\Bf(\Hc_S)$ and $\{E_k\}\subset\Bf(\Hc_E)$.
 
-We can then proceed to compute the reduced generator approximated at second order $\Fc_{t,2}(\mu)$. First, using \cite[Proposition 5]{grigoletto2024exact}, we have that the generator at first order is \[\Fc_{(1)}(\mu) = \Rc \Lc \Jc(\mu) = -i[\check{H},\mu]\] where
-\begin{align*}
-    \check{H} &= \Jc^\dag(H) = \tr_{E}[(\one_S\otimes\tau) H]
-    = \sum_k a_k(\tau) S_k
-\end{align*}
-and $a_k(\tau) \equiv \tr[\tau E_k]. $ Next, we can proceed to compute $\Fc_{(2)}$ by first computing $\Rc \Lc^2 \Jc$ obtaining 
-\begin{align*}
-    \Rc \Lc^2 \Jc(\mu) &= &= \sum_{j,k} c_{j,k}(\tau) \left[2S_j \mu S_k - \{ S_kS_j, \mu\}  \right]
-\end{align*}
-where we defined $c_{j,k}(\tau) \equiv \tr[ E_j\tau E_k]$.
-On the other hand, since $(\Rc\Lc\Jc)^2 = \Dc_{\sqrt{2}\check{H}}$, we have
-\begin{align*}
-    (\Rc\Lc\Jc)^2(\mu) = \sum_{j,k}  a_j(\tau)a_k(\tau) \left[ 2 S_j \mu S_k - \{S_kS_j,\mu\} \right]
-\end{align*}
-and thus 
-\begin{align*}
-    \Fc_{(2)}(\mu)&=[\Rc \Lc^2 \Jc  - (\Rc\Lc\Jc)^2](\mu) =\\ &=\sum_{j,k} [\chi(\tau)]_{j,k} \left[2S_j \mu S_k -  \{ S_kS_j, \mu\}  \right]
-\end{align*}
-where we defined the matrix $\chi(\tau)$ whose elements are $[\chi(\tau)]_{j,k} \equiv c_{j,k}(\tau)-a_j(\tau)a_k(\tau)$.
+% We can then proceed to compute the reduced generator approximated at second order $\Fc_{t,2}(\mu)$. First, using \cite[Proposition 5]{grigoletto2024exact}, we have that the generator at first order is \[\Fc_{(1)}(\mu) = \Rc \Lc \Jc(\mu) = -i[\check{H},\mu]\] where
+% \begin{align*}
+%     \check{H} &= \Jc^\dag(H) = \tr_{E}[(\one_S\otimes\tau) H]
+%     = \sum_k a_k(\tau) S_k
+% \end{align*}
+% and $a_k(\tau) \equiv \tr[\tau E_k]. $ Next, we can proceed to compute $\Fc_{(2)}$ by first computing $\Rc \Lc^2 \Jc$ obtaining 
+% \begin{align*}
+%     \Rc \Lc^2 \Jc(\mu) &= &= \sum_{j,k} c_{j,k}(\tau) \left[2S_j \mu S_k - \{ S_kS_j, \mu\}  \right]
+% \end{align*}
+% where we defined $c_{j,k}(\tau) \equiv \tr[ E_j\tau E_k]$.
+% On the other hand, since $(\Rc\Lc\Jc)^2 = \Dc_{\sqrt{2}\check{H}}$, we have
+% \begin{align*}
+%     (\Rc\Lc\Jc)^2(\mu) = \sum_{j,k}  a_j(\tau)a_k(\tau) \left[ 2 S_j \mu S_k - \{S_kS_j,\mu\} \right]
+% \end{align*}
+% and thus 
+% \begin{align*}
+%     \Fc_{(2)}(\mu)&=[\Rc \Lc^2 \Jc  - (\Rc\Lc\Jc)^2](\mu) =\\ &=\sum_{j,k} [\chi(\tau)]_{j,k} \left[2S_j \mu S_k -  \{ S_kS_j, \mu\}  \right]
+% \end{align*}
+% where we defined the matrix $\chi(\tau)$ whose elements are $[\chi(\tau)]_{j,k} \equiv c_{j,k}(\tau)-a_j(\tau)a_k(\tau)$.
 
-One can then notice that the matrix $\chi(\tau)$ coincides with a covariance matrix, i.e. 
-\begin{align*}
-    [\chi(\tau)]_{j,k} &= \tr[E_j \tau E_k] - \tr[E_j\tau]\tr[E_k\tau]\\
-    &= \Eb_\tau[(E_k - \Eb_\tau[E_k]\one_E) (E_j - \Eb_\tau[E_j]\one_E)]
-\end{align*}
-hence $\chi(\tau)$ is a positive semidefinite matrix.
-Since $\chi(\tau)$ is positive semidefinite, it is diagonalizable with a unitary matrix, i.e. $UU^\dag =U^\dag U = \one$ such that $U\chi(\tau) U^\dag = \gamma(\tau)$ where $\gamma(\tau)$ is a diagonal matrix of positive values (note that in reality $U$ is also a function of $\tau$). We can then define 
-\[L_h = \sum_j \overline{[U]_{h,j}} S_j \]
-to obtain 
-\begin{align*}
-\Fc_{(2)}(\mu) 
-&=\sum_{j,k} [\chi(\tau)]_{j,k} \left[2S_j \mu S_k - \{ S_kS_j, \mu\}  \right]\\
-&=\sum_{j,k,h} \underbrace{[U^\dag]_{j,h}[\gamma(\tau)]_{h} [U]_{h,k}}_{[\chi(\tau)]_{j,k}} \left[2 S_j \mu S_k - \{ S_k S_j, \mu\}  \right]\\
-&=\sum_{j,k,h} [\gamma(\tau)]_{h} \overline{[U]_{h,j}}[U]_{h,k} \left[2 S_j \mu S_k - \{ S_k S_j, \mu\}  \right]\\
-&=\sum_h [\gamma(\tau)]_{h} \left[2L_h \mu L_h^\dag - \{ L_h^\dag L_h, \mu\}  \right] \\
-& = \sum_h [\gamma(\tau)]_h \Dc_{\sqrt{2} L_h}(\mu).
-\end{align*}
-Because $\chi(\tau)$ is positive semidefinite and thus $[\gamma(\tau)]_h$ are non-negative, then $\Fc_{(2)}$ is of Lindblad type. This implies that the approximated time-dependent generator at second order 
-\[\Fc_{t,2}(\mu) = -i[\check{H},\mu] + \sum_h t [\gamma(\tau)]_h \Dc_{\sqrt{2} L_h}(\mu)\]
-is also of Lindblad type at all times $t\geq0$ as proved in Theorem \ref{thm:cptp_second_order}.
+% One can then notice that the matrix $\chi(\tau)$ coincides with a covariance matrix, i.e. 
+% \begin{align*}
+%     [\chi(\tau)]_{j,k} &= \tr[E_j \tau E_k] - \tr[E_j\tau]\tr[E_k\tau]\\
+%     &= \Eb_\tau[(E_k - \Eb_\tau[E_k]\one_E) (E_j - \Eb_\tau[E_j]\one_E)]
+% \end{align*}
+% hence $\chi(\tau)$ is a positive semidefinite matrix.
+% Since $\chi(\tau)$ is positive semidefinite, it is diagonalizable with a unitary matrix, i.e. $UU^\dag =U^\dag U = \one$ such that $U\chi(\tau) U^\dag = \gamma(\tau)$ where $\gamma(\tau)$ is a diagonal matrix of positive values (note that in reality $U$ is also a function of $\tau$). We can then define 
+% \[L_h = \sum_j \overline{[U]_{h,j}} S_j \]
+% to obtain 
+% \begin{align*}
+% \Fc_{(2)}(\mu) 
+% &=\sum_{j,k} [\chi(\tau)]_{j,k} \left[2S_j \mu S_k - \{ S_kS_j, \mu\}  \right]\\
+% &=\sum_{j,k,h} \underbrace{[U^\dag]_{j,h}[\gamma(\tau)]_{h} [U]_{h,k}}_{[\chi(\tau)]_{j,k}} \left[2 S_j \mu S_k - \{ S_k S_j, \mu\}  \right]\\
+% &=\sum_{j,k,h} [\gamma(\tau)]_{h} \overline{[U]_{h,j}}[U]_{h,k} \left[2 S_j \mu S_k - \{ S_k S_j, \mu\}  \right]\\
+% &=\sum_h [\gamma(\tau)]_{h} \left[2L_h \mu L_h^\dag - \{ L_h^\dag L_h, \mu\}  \right] \\
+% & = \sum_h [\gamma(\tau)]_h \Dc_{\sqrt{2} L_h}(\mu).
+% \end{align*}
+% Because $\chi(\tau)$ is positive semidefinite and thus $[\gamma(\tau)]_h$ are non-negative, then $\Fc_{(2)}$ is of Lindblad type. This implies that the approximated time-dependent generator at second order 
+% \[\Fc_{t,2}(\mu) = -i[\check{H},\mu] + \sum_h t [\gamma(\tau)]_h \Dc_{\sqrt{2} L_h}(\mu)\]
+% is also of Lindblad type at all times $t\geq0$ as proved in Theorem \ref{thm:cptp_second_order}.
 
-Note that in deriving the reduced generator $\Fc_{t,2}$ there was no need to move the system description into a rotating frame thus proving one of the benefits of the proposed approach. 
+% Note that in deriving the reduced generator $\Fc_{t,2}$ there was no need to move the system description into a rotating frame thus proving one of the benefits of the proposed approach. 
 
 \section{Applications to quantum models}
 \label{sec:applications}
 In this section, we consider a few examples of interest:\\ 
-I) The first example considers a qubit coupled to a bosonic bath. As the exact solution of such a model is well known, this example allows us to assess the goodness of the approximation proposed in this work. \\
-II) Second, a qubit coupled to a finite bath is studied. Given the fact that the bath is finite-dimensional, this is typically considered a ``highly non-Markovian model''. This example allows us to showcase the numerical procedure at higher orders for both a case where the original dynamics is purely Hamiltonian and a case where a dissipative term is included. \\
-III) Finally, an Ising spin chain is studied. This example allows us to show that the proposed procedure works in cases that are more general than the bipartite case.
+% I) The first example considers a qubit coupled to a bosonic bath. As the exact solution of such a model is well known, this example allows us to assess the goodness of the approximation proposed in this work. \\
+I) A qubit coupled to a finite bath is studied. Given the fact that the bath is finite-dimensional, this is typically considered a ``highly non-Markovian model''. This example allows us to showcase the numerical procedure at higher orders for both a case where the original dynamics is purely Hamiltonian and a case where a dissipative term is included. \\
+III) An Ising spin chain is studied. This example allows us to show that the proposed procedure works in cases that are more general than the bipartite case.
 
+% \begin{figure*}
+%     \centering
+%     \begin{subfigure}{0.48\textwidth}
+%         \centering
+%         \includegraphics[width=\linewidth]{trajectory_spin_boson.pdf}
+%     \end{subfigure}
+%     \begin{subfigure}{0.48\textwidth}
+%         \centering
+%         \includegraphics[width=\linewidth]{error_spin_boson.pdf}
+%     \end{subfigure}
+%     \caption{Simulation of the dephasing spin-boson model for $s=0.5,1,1.5$ where we compare the exact solution $\rho_{S,t}$ given in Eq.\eqref{eq:exact_boson}, the second order approximation $\mu_t$ derived in this work, given in Eq. \eqref{eq:time_ordered_boson} and the coarse-grained dynamics $\tilde{\rho}_{S,t}$ given in Eq. \eqref{eq:coarse_grained_boson}. Left: Evolution of the expectation value $\expect{\sigma_x}$ for the exact solution (continuous curves), second order approximation (dashed curve) and coarse-grained dynamics (dotted curve). The expectations values of the cases $s=0.5,1.5$ have been shifted by $\pm0.5$ respectively for graphical purposes. Right: evolution of the trace-norm error with respect to the exact solution committed by the second order approximation (continuous curve) and coarse-grained dynamics (dashed curve).   }
+%     \label{fig:dephasing_spin_boson}
+% \end{figure*}
 
-\begin{figure*}
-    \centering
-    \begin{subfigure}{0.48\textwidth}
-        \centering
-        \includegraphics[width=\linewidth]{trajectory_spin_boson.pdf}
-    \end{subfigure}
-    \begin{subfigure}{0.48\textwidth}
-        \centering
-        \includegraphics[width=\linewidth]{error_spin_boson.pdf}
-    \end{subfigure}
-    \caption{Simulation of the dephasing spin-boson model for $s=0.5,1,1.5$ where we compare the exact solution $\rho_{S,t}$ given in Eq.\eqref{eq:exact_boson}, the second order approximation $\mu_t$ derived in this work, given in Eq. \eqref{eq:time_ordered_boson} and the coarse-grained dynamics $\tilde{\rho}_{S,t}$ given in Eq. \eqref{eq:coarse_grained_boson}. Left: Evolution of the expectation value $\expect{\sigma_x}$ for the exact solution (continuous curves), second order approximation (dashed curve) and coarse-grained dynamics (dotted curve). The expectations values of the cases $s=0.5,1.5$ have been shifted by $\pm0.5$ respectively for graphical purposes. Right: evolution of the trace-norm error with respect to the exact solution committed by the second order approximation (continuous curve) and coarse-grained dynamics (dashed curve).   }
-    \label{fig:dephasing_spin_boson}
-\end{figure*}
+% \subsection{Dephasing spin boson model}
+% \label{sec:spin_boson}
 
-\subsection{Dephasing spin boson model}
-\label{sec:spin_boson}
+% Inspired by \cite{lidar2001completely,reina2002decoherence,breuer2002theory,lidar2020lecturenotestheoryopen}, in this section we consider a dephasing spin-boson model to further showcase the advances and drawbacks of the proposed method. Such a model is typically used to model the dephasing of qubits in quantum computers \cite{sun2025quantum}. Note that: i) in this section we make an exception to the assumption of finite-dimensional systems considered throughout the paper; ii) the model we are going to consider is exactly solvable hence the intent of this subsection is to showcase that the proposed approximation method provides results comparable to other approximation techniques, not to compare it against the exact solution of the model. 
+% Nevertheless, this example helps us to understand the degrees of approximation that the proposed method offers and how the process unfolds.
 
-Inspired by \cite{lidar2001completely, reina2002decoherence, breuer2002theory, lidar2020lecturenotestheoryopen}, in this section we consider a dephasing spin-boson model to further showcase the advances and drawbacks of the proposed method. Such a model is typically used to model the dephasing of qubits in quantum computers \cite{sun2025quantum}. Note that: i) in this section we make an exception to the assumption of finite-dimensional systems considered throughout the paper; ii) the model we are going to consider is exactly solvable hence the intent of this subsection is to showcase that the proposed approximation method provides results comparable to other approximation techniques, not to compare it against the exact solution of the model. 
-Nevertheless, this example helps us to understand the degrees of approximation that the proposed method offers and how the process unfolds.
+% The model is composed of a spin $\um$ system $\Hc_S\simeq\Cb^2$ coupled to a bath $\Hc_B$ composed of $N_B$ bosonic modes, $\Hc = \Hc_S\otimes \Hc_B$. The model's dynamics is driven by the total Hamiltonian $H= H_S\otimes \one_B + \one_S \otimes H_B + H_{\rm int}$ where 
+% \begin{align}
+%     H_S &= \frac{g}{2}\sigma_z\\
+%     H_B &= \sum_{k=1}^{N_B} \omega_k \left(n_k+\frac{\one}{2}\right)\\
+%     H_{\rm int} &= \sigma_z \otimes \left(\sum_{k=1}^{N_B}\lambda_k b_k + \overline{\lambda}_k b_k^\dag\right)
+% \end{align} 
+% and where $n_k = b_k^\dag b_k$ and $b_k$ are the bosonic number and annihilation operator for mode $k$ respectively and satisfy $[b_k,b_l^\dag]=\delta_{k,l}\one$, $\omega_k\in\Rb$ is the frequency of the mode and $\lambda_k\in\Cb$ is the strength of the coupling between the mode and the spin.  
 
-The model is composed of a spin $\um$ system $\Hc_S\simeq\Cb^2$ coupled to a bath $\Hc_B$ composed of $N_B$ bosonic modes, $\Hc = \Hc_S\otimes \Hc_B$. The model's dynamics is driven by the total Hamiltonian $H= H_S\otimes \one_B + \one_S \otimes H_B + H_{\rm int}$ where 
-\begin{align}
-    H_S &= \frac{g}{2}\sigma_z\\
-    H_B &= \sum_{k=1}^{N_B} \omega_k \left(n_k+\frac{\one}{2}\right)\\
-    H_{\rm int} &= \sigma_z \otimes \left(\sum_{k=1}^{N_B}\lambda_k b_k + \overline{\lambda}_k b_k^\dag\right)
-\end{align} 
-and where $n_k = b_k^\dag b_k$ and $b_k$ are the bosonic number and annihilation operator for mode $k$ respectively and satisfy $[b_k,b_l^\dag]=\delta_{k,l}\one$, $\omega_k\in\Rb$ is the frequency of the mode and $\lambda_k\in\Cb$ is the strength of the coupling between the mode and the spin.  
+% We assume that the initial state is factorized $\rho_0 = \rho_{S,0}\otimes\rho_B$ with $\rho_B = e^{-\beta H_B}/\tr[e^{-\beta H_B}]$ and some state $\rho_{S,0}\in\Df(\Hc_S)$ for the spin. We further assume that the projector $\Pc$ is $\Pc(\rho) = \tr_B(\rho)\otimes \rho_B$, which can be factorized into $\Rc(\rho) = \tr_B(\rho)$ and $\Jc(\sigma)=\sigma\otimes\rho_B$. Then we can verify $\Pc(\rho_0) = \rho_0$. 
 
-We assume that the initial state is factorized $\rho_0 = \rho_{S,0}\otimes\rho_B$ with $\rho_B = e^{-\beta H_B}/\tr[e^{-\beta H_B}]$ and some state $\rho_{S,0}\in\Df(\Hc_S)$ for the spin. We further assume that the projector $\Pc$ is $\Pc(\rho) = \tr_B(\rho)\otimes \rho_B$, which can be factorized into $\Rc(\rho) = \tr_B(\rho)$ and $\Jc(\sigma)=\sigma\otimes\rho_B$. Then we can verify $\Pc(\rho_0) = \rho_0$. 
+% This model has a known exact analytical solutions given by \cite[eq. (336) and (374)]{lidar2020lecturenotestheoryopen}:
+% \[\rho_{S,t}' = \begin{bmatrix}
+% [\rho_{S,0}]_{0,0}&e^{-2\gamma(t)t}[\rho_{S,0}]_{0,1}\\
+% e^{-2{\gamma(t)}t}[\rho_{S,0}]_{1,0}&[\rho_{S,0}]_{1,1}\\
+% \end{bmatrix}\]
+% where $\rho_{S,t}'$ is the state of the central spin in the rotating frame and  
+% \(\gamma(t) = \sum_k \alpha_k \frac{1-\cos(\omega_k t)}{t}\)
+% with $\alpha_k \equiv 2\frac{|\lambda_k|^2}{\omega_k^2}\coth\left(\frac{\beta\omega_k}{2}\right)\in\Rb.$
+% By taking the derivative of an off diagonal element we obtain:
+% \[\frac{d}{dt}[{\rho}_{S,t}']_{0,1} = -2\underbrace{\left[\gamma(t) + \frac{d\gamma(t)}{dt}t\right]}_{\equiv \xi(t)}[{\rho}_{S,t}']_{0,1}\]
+% where \(\xi(t) = \sum_k\alpha_k\omega_k\sin(\omega_k t)\).
+% This dynamics corresponds to the differential equation 
+% \( \frac{d}{dt}\rho_{S,t}' = \xi(t)\Dc_{\sigma_z}[\rho_{S,t}']\)
+% for the state in rotating frame or, equivalently, to
+% \begin{equation}
+%     \dot{\rho}_{S,t} = -i[H_S,\rho_{S,t}] + \xi(t) \Dc_{\sigma_z}(\rho_{S,t})
+%     \label{eq:exact_boson}
+% \end{equation} 
+% for the state in the lab frame. 
 
-This model has a known exact analytical solutions given by \cite[eq. (336) and (374)]{lidar2020lecturenotestheoryopen}:
-\[\rho_{S,t}' = \begin{bmatrix}
-[\rho_{S,0}]_{0,0}&e^{-2\gamma(t)t}[\rho_{S,0}]_{0,1}\\
-e^{-2{\gamma(t)}t}[\rho_{S,0}]_{1,0}&[\rho_{S,0}]_{1,1}\\
-\end{bmatrix}\]
-where $\rho_{S,t}'$ is the state of the central spin in the rotating frame and  
-\(\gamma(t) = \sum_k \alpha_k \frac{1-\cos(\omega_k t)}{t}\)
-with $\alpha_k \equiv 2\frac{|\lambda_k|^2}{\omega_k^2}\coth\left(\frac{\beta\omega_k}{2}\right)\in\Rb.$
-By taking the derivative of an off diagonal element we obtain:
-\[\frac{d}{dt}[{\rho}_{S,t}']_{0,1} = -2\underbrace{\left[\gamma(t) + \frac{d\gamma(t)}{dt}t\right]}_{\equiv \xi(t)}[{\rho}_{S,t}']_{0,1}\]
-where \(\xi(t) = \sum_k\alpha_k\omega_k\sin(\omega_k t)\).
-This dynamics corresponds to the differential equation 
-\( \frac{d}{dt}\rho_{S,t}' = \xi(t)\Dc_{\sigma_z}[\rho_{S,t}']\)
-for the state in rotating frame or, equivalently, to
-\begin{equation}
-    \dot{\rho}_{S,t} = -i[H_S,\rho_{S,t}] + \xi(t) \Dc_{\sigma_z}(\rho_{S,t})
-    \label{eq:exact_boson}
-\end{equation} 
-for the state in the lab frame. 
+% By following the procedure detailed in Sec. \ref{sec:second_order_bipartite} we can then proceed to compute the reduced time-dependent generator at second order $\Fc_{t,2}$. 
+% Denoting $\expect{X}_B \equiv \tr[\rho_B X]$, we recall that \cite[eq. (331)]{lidar2020lecturenotestheoryopen}: 
+% \begin{align*}
+%     \expect{b_k^\dag}_B &= \expect{b_k}_B = \expect{b_k^\dag b_l^\dag}_B = \expect{b_k b_l}_B = 0,\\
+%     \expect{b_j^\dag b_k}_B &= \frac{\delta_{j,k}}{e^{\beta\omega_k}-1}.
+% \end{align*}
+% We first compute the reduced Hamiltonian $\check{H} = \Jc^\dag(H)$ where $\Jc^\dag(X) = \tr_B[X(\one_S\otimes\rho_B)]$. Noting that $\tr_B[H_S\otimes\one_B(\one_S\otimes\rho_B)] = H_S \tr[\rho_B] = H_S$, $\tr_B[\one_S\otimes H_B(\one_S\otimes\rho_B)] = \one_S \expect{H_B}_B$ and
+% \begin{align*}
+%     &\tr_B\left[\sigma_z\otimes\left(\sum_{k=1}^{N_B}\lambda_k b_k + \overline{\lambda}_k b_k^\dag\right)(\one_S\otimes\rho_B)\right]\\ &\qquad = \sigma_z \left( \sum_{k=1}^{N_B}\lambda_k \cancel{\expect{b_k}_B} + \overline{\lambda}_k \cancel{\expect{b_k^\dag}_B} \right) = 0
+% \end{align*}
+% we have \(\check{H} = H_S \) as the term \(\one \expect{H_B}_B\) only contributes to a phase and can thus be removed, leading to the first-order term $\Fc_{(1)}(\mu) = -i[\check{H},\mu]$. The second order term is instead found to be $\Fc_{(2)}(\mu) = \varphi \Dc_{\sigma_z}(\mu)$ with $\varphi\equiv \sum_{k=1}^{N_B} \frac{2|\lambda_k|^2}{e^{\beta \omega_k}-1}$. All necessary calculations are detailed in Appendix \ref{sec:spin_boson_model_calculations} for the sake of clarity. 
 
-By following the procedure detailed in Sec. \ref{sec:second_order_bipartite} we can then proceed to compute the reduced time-dependent generator at second order $\Fc_{t,2}$. 
-Denoting $\expect{X}_B \equiv \tr[\rho_B X]$, we recall that \cite[eq. (331)]{lidar2020lecturenotestheoryopen}: 
-\begin{align*}
-    \expect{b_k^\dag}_B &= \expect{b_k}_B = \expect{b_k^\dag b_l^\dag}_B = \expect{b_k b_l}_B = 0,\\
-    \expect{b_j^\dag b_k}_B &= \frac{\delta_{j,k}}{e^{\beta\omega_k}-1}.
-\end{align*}
-We first compute the reduced Hamiltonian $\check{H} = \Jc^\dag(H)$ where $\Jc^\dag(X) = \tr_B[X(\one_S\otimes\rho_B)]$. Noting that $\tr_B[H_S\otimes\one_B(\one_S\otimes\rho_B)] = H_S \tr[\rho_B] = H_S$, $\tr_B[\one_S\otimes H_B(\one_S\otimes\rho_B)] = \one_S \expect{H_B}_B$ and
-\begin{align*}
-    &\tr_B\left[\sigma_z\otimes\left(\sum_{k=1}^{N_B}\lambda_k b_k + \overline{\lambda}_k b_k^\dag\right)(\one_S\otimes\rho_B)\right]\\ &\qquad = \sigma_z \left( \sum_{k=1}^{N_B}\lambda_k \cancel{\expect{b_k}_B} + \overline{\lambda}_k \cancel{\expect{b_k^\dag}_B} \right) = 0
-\end{align*}
-we have \(\check{H} = H_S \) as the term \(\one \expect{H_B}_B\) only contributes to a phase and can thus be removed, leading to the first-order term $\Fc_{(1)}(\mu) = -i[\check{H},\mu]$. The second order term is instead found to be $\Fc_{(2)}(\mu) = \varphi \Dc_{\sigma_z}(\mu)$ with $\varphi\equiv \sum_{k=1}^{N_B} \frac{2|\lambda_k|^2}{e^{\beta \omega_k}-1}$. All necessary calculations are detailed in Appendix \ref{sec:spin_boson_model_calculations} for the sake of clarity. 
+% Combining both terms we obtain an approximate reduced model described by the time-dependent Lindblad equation
+% \begin{equation}
+%     \dot{\mu}_t = -i[H_S,\mu_t] + \varphi t \Dc_{\sigma_z}(\mu_t).
+%     \label{eq:time_ordered_boson}
+% \end{equation} 
+% By comparing this equation with the exact solution of Eq. \eqref{eq:exact_boson} we can observe that both the Hamiltonian and noise operator are correctly recovered whereas the time-dependent dissipation strength $\xi(t)$ is approximated with $\varphi t$. Interestingly, the value $\varphi$ does not coincide with the first order Taylor expansion of $\xi(t)$ which is $\sum_k\alpha_k\omega_k$.
 
-Combining both terms we obtain an approximate reduced model described by the time-dependent Lindblad equation
-\begin{equation}
-    \dot{\mu}_t = -i[H_S,\mu_t] + \varphi t \Dc_{\sigma_z}(\mu_t).
-    \label{eq:time_ordered_boson}
-\end{equation} 
-By comparing this equation with the exact solution of Eq. \eqref{eq:exact_boson} we can observe that both the Hamiltonian and noise operator are correctly recovered whereas the time-dependent dissipation strength $\xi(t)$ is approximated with $\varphi t$. Interestingly, the value $\varphi$ does not coincide with the first order Taylor expansion of $\xi(t)$ which is $\sum_k\alpha_k\omega_k$.
+% To better asses the quality of the reduced second order approximation we next compare the evolution of $\rho_{S,t}$ and that of $\mu_t$ with the coarse-grained approximation discussed in \cite[eq. (332)]{lidar2020lecturenotestheoryopen}, i.e. \(\tilde{\rho}_{S,t}\in\Df(\Hc_S)\) and
+% \begin{equation}
+%     \dot{\tilde{\rho}}_{S,t} = -i[H_S,\tilde{\rho}_{S,t}] + \gamma(\tau)\Dc_{\sigma_s}(\tilde{\rho}_{S,t})
+%     \label{eq:coarse_grained_boson}
+% \end{equation}
+% where the constant $\tau\in\Rb$ is specified later. 
 
-To better asses the quality of the reduced second order approximation we next compare the evolution of $\rho_{S,t}$ and that of $\mu_t$ with the coarse-grained approximation discussed in \cite[eq. (332)]{lidar2020lecturenotestheoryopen}, i.e. \(\tilde{\rho}_{S,t}\in\Df(\Hc_S)\) and
-\begin{equation}
-    \dot{\tilde{\rho}}_{S,t} = -i[H_S,\tilde{\rho}_{S,t}] + \gamma(\tau)\Dc_{\sigma_s}(\tilde{\rho}_{S,t})
-    \label{eq:coarse_grained_boson}
-\end{equation}
-where the constant $\tau\in\Rb$ is specified later. 
-
-The bath coupling coefficients are going to be defined as $\lambda_k = \sqrt{J(\omega_k)}$ \cite{tamascelli2020quantum} where $J(\omega)$ is the bath spectral density and is chosen to be 
-\begin{equation}
-    J(\omega) = \Lambda \omega_c^{1-s} \omega^s e^{-\frac{\omega}{\omega_c}}
-\end{equation}
-where $\Lambda\in\Rb_+$ is an overall constant, $\omega_c\in\Rb_+$ is the bath cut-off frequency and $s\in\Rb_+$ is the Ohmicity parameter which determines three cases of interest, i.e. Ohmic ($s=1$), sub-Ohmic($s<1$) and super-Ohmic ($s>1$) \cite{PhysRevB.92.195143}.
+% The bath coupling coefficients are going to be defined as $\lambda_k = \sqrt{J(\omega_k)}$ \cite{tamascelli2020quantum} where $J(\omega)$ is the bath spectral density and is chosen to be 
+% \begin{equation}
+%     J(\omega) = \Lambda \omega_c^{1-s} \omega^s e^{-\frac{\omega}{\omega_c}}
+% \end{equation}
+% where $\Lambda\in\Rb_+$ is an overall constant, $\omega_c\in\Rb_+$ is the bath cut-off frequency and $s\in\Rb_+$ is the Ohmicity parameter which determines three cases of interest, i.e. Ohmic ($s=1$), sub-Ohmic($s<1$) and super-Ohmic ($s>1$) \cite{PhysRevB.92.195143}.
 
 \begin{figure*}
     \centering
@@ -618,14 +817,14 @@ where $\Lambda\in\Rb_+$ is an overall constant, $\omega_c\in\Rb_+$ is the bath c
 \end{figure*}
 
 
-In Fig. \ref{fig:dephasing_spin_boson} the results of the simulations are shown in the three cases, i.e. $s=0.5,1,1.5$. The other parameters used in the simulations are $g=1.8$, $\omega_c =0.2$, $\Lambda=0.5$, $\beta=10$, $\tau=32/\omega_c$, and where $\omega_k$ are $N_B=100$, taken equally spaced between $0$ and $1$. Instead, the initial state has been fixed to $\rho_{S,0}=\mu_0 = \tilde{\rho}_{S,0} = \ketbra{+}{+}$. 
-Importantly, one can observe in Fig. \ref{fig:dephasing_spin_boson} (right) that, in each of the three cases, the error committed by the second-order approximation, Eq. \eqref{eq:time_ordered_boson} is below that of the coarse-grained dynamics, Eq. \eqref{eq:coarse_grained_boson} for both the initial and final phases, while it is above for a central phase.     
-This indicates that the second-order approximation performs better than the coarse-grained approximation in this case.
+% In Fig. \ref{fig:dephasing_spin_boson} the results of the simulations are shown in the three cases, i.e. $s=0.5,1,1.5$. The other parameters used in the simulations are $g=1.8$, $\omega_c =0.2$, $\Lambda=0.5$, $\beta=10$, $\tau=32/\omega_c$, and where $\omega_k$ are $N_B=100$, taken equally spaced between $0$ and $1$. Instead, the initial state has been fixed to $\rho_{S,0}=\mu_0 = \tilde{\rho}_{S,0} = \ketbra{+}{+}$. 
+% Importantly, one can observe in Fig. \ref{fig:dephasing_spin_boson} (right) that, in each of the three cases, the error committed by the second-order approximation, Eq. \eqref{eq:time_ordered_boson} is below that of the coarse-grained dynamics, Eq. \eqref{eq:coarse_grained_boson} for both the initial and final phases, while it is above for a central phase.     
+% This indicates that the second-order approximation performs better than the coarse-grained approximation in this case.
 
 \subsection{Dissipative central spin model}
 \label{sec:central_spin}
 
-In this section we consider a dissipative central spin model to showcase the capabilities of the proposed technique. Similar models have been studied in the literature, see e.g. \cite{barnes2012nonperturbative, tiwari2025strong, jing2018decoherence, ferraro2008}. The model is composed by a system, i.e. $\Hc_S\simeq\Cb^2$ also denoted as spin $1$ and a bath composed of $N_B$ other spins, i.e. $\Hc_B\simeq\Cb^{2^{N_B}}$ counted from $2$ to $N_B+1$. 
+In this section we consider a dissipative central spin model to showcase the capabilities of the proposed technique. Similar models have been studied in the literature, see e.g. \cite{barnes2012nonperturbative,tiwari2025strong,jing2018decoherence,ferraro2008}. The model is composed by a system, i.e. $\Hc_S\simeq\Cb^2$ also denoted as spin $1$ and a bath composed of $N_B$ other spins, i.e. $\Hc_B\simeq\Cb^{2^{N_B}}$ counted from $2$ to $N_B+1$. 
 
 \begin{figure*}[th]
     \centering
@@ -640,7 +839,6 @@ In this section we consider a dissipative central spin model to showcase the cap
     \caption{Simulation of the Ising spin chain. Magnetization of the first spin of the chain $\expect{\sigma_z^{(1)}}$ versus time on the left and the error norm $\norm{\eta_t-\mu_t}_2$ versus time on the right. Various approximation's degrees $N=2,4,10,20$ are shown in each figure. The black crosses denote the points where the evolved state $\mu_t$ exits the $n$-dimensional simplex, i.e. $\mu_t$ is no longer a probability distribution while the dotted curves on the right again represent fitted curves of $\alpha t^{N+1}$. }
     \label{fig:spin_chain}
 \end{figure*}
-
 
 The system Hamiltonian is described as $H = H_S + H_B + H_{\rm int}$ where:
 \begin{align*}
@@ -706,15 +904,152 @@ Given the numerical examples of the central spin model presented in Sec. \ref{se
 \section{Acknowledgments}
 The author would like to thank Francesco Ticozzi for his contribution in the initial idea of this work and for his constant support. The author also thanks Lorenza Viola, Michiel Burgelman, Augusto Ferrante, and Giacomo Baggio for useful discussions on the matters of this work.
 
-\paragraph{Code availability:} The code necessary to reproduce all the numerical experiments presented in this work is available at \cite{Myrepo}. 
+\textbf{Code availability:} The code necessary to reproduce all the numerical experiments presented in this work is available at \cite{Myrepo}. 
 
-\paragraph{Funding:}
+\textbf{Funding:}
 The author has been supported by the Italian Ministry of University and Research under the PRIN project “Extracting essential information and dynamics from complex networks”, grant no. 2022MBC2EZ.
 
-\bibliography{ref}
 
-\onecolumngrid
+\bibliographystyle{plain}        % Include this if you use bibtex 
+\bibliography{ref}           % and a bib file to produce the 
+                                 % bibliography (preferred). The
+                                 % correct style is generated by
+                                 % Elsevier at the time of printing.
+
+% \begingroup
+% \let\clearpage\relax 
+
+% \onecolumn 
 \appendix
-\input{appendix.tex}
 
+\section{Proof for the time-ordered expansion}
+\label{sec:thechnical_results:time_ordered}
+% Before proving the main result, Theorem \ref{thm:time_ordered_expansion}, we shall develop some intuition about how we prove it.
+% \begin{exmp}
+% To provide some intuition about Theorem \ref{thm:time_ordered_expansion} let us consider a simple case: \(F_t = F_{(1)} + t F_{(2)} +t^2 F_{(3)}\). 
+% Let us first compute the first few terms of the Dyson expansion \cite{Dyson} of $\Tb e^{\int_0^t F_s ds}$, i.e. $\Tb e^{\int_0^t F_s ds} = \sum_{n=0}^{+\infty} \Phi_{(n),t}$.
+% At zeroth order we have $\Phi_{(0),t} = \Ic$ while at orders $1,2$ and $3$ we have:
+% \begin{align*}
+%     \Phi_{(1),t} &= \int_0^t F_{s} ds = \int_0^t (F_{(1)} + sF_{(2)} + s^{2} F_{(3)}) ds = 
+%     t F_{(1)} + t^2\frac{F_{(2)}}{2} + t^3 \frac{F_{(3)}}{3} ,
+% \end{align*}
+% \begin{align*}
+%     \Phi_{(2),t} &= \int_0^t dt_1\, \int_0^{t_1} dt_2\, F_{t_1} F_{t_2} 
+%     = \sum_{j=0}^{1} \int_0^t dt_1\, F_{t_1} F_{(j+1)} \int_0^{t_1} dt_2\,  t_2^j 
+%     = \sum_{j=0}^{1} \int_0^t dt_1\, F_{t_1}F_{(j+1)}  \frac{t_1^{j+1}}{j+1}\\
+%     & = \sum_{k,j=0}^{1} F_{(k+1)}F_{(j+1)} \int_0^t dt_1\, t_1^k \frac{t_1^{j+1}}{j+1} = \sum_{k,j=0}^{1} F_{(k+1)}F_{(j+1)} \frac{t^{k+j+2}}{(k+j+2)(j+1)} = \sum_{k,j=1}^{2} F_{(k)}F_{(j)} \frac{t^{k+j}}{(j+k)j}\\
+%     &= \underbrace{F_{(1)}^2 \frac{t^2}{2}}_{j=k=1}
+%     + \underbrace{F_{(2)}F_{(1)}\frac{t^3}{3}}_{j=1,k=2} 
+%     + \underbrace{F_{(1)}F_{(2)}\frac{t^3}{6}}_{j=2,k=1} 
+%     %+ \underbrace{F_{(2)}^2 \frac{t^4}{8}}_{j=k=2} 
+%     + O(t^4),
+% \end{align*}
+% \begin{align*}
+%     \Phi_{(3),t} &= \int_0^t dt_1 \int_0^{t_1} dt_2 \int_0^{t_2} dt_3 F_{t_1} F_{t_2} F_{t_3} = \int_0^t dt_1 F_{t_1} \underbrace{\int_0^{t_1} dt_2 \int_0^{t_2} dt_3  F_{t_2} F_{t_3}}_{= \sum_{j,k=1}^{2} F_{(k)}F_{(j)} \frac{t_1^{k+j}}{(j+k)j}}\\ 
+%     &= \sum_{h,k,j=1}^{2} F_{(h)}F_{(k)}F_{(j)} \int_0^t dt_1\, t_1^h \frac{t_1^{k+j}}{(j+k)j} = \sum_{h,k,j=1}^{2} F_{(h)}F_{(k)}F_{(j)}  \frac{t^{h+k+j}}{(h+k+j)(j+k)j} 
+%      = \underbrace{F_{(1)}^3 \frac{t^{3}}{3!}}_{h=k=j=1} + O(t^4).
+% \end{align*}
+% Grouping together the terms of $\Tb e^{\int_0^t F_s ds}$ by the order of the exponent of $t$, we have 
+% \begin{align*}
+%     \Tb e^{\int_0^t F_s ds} &= \underbrace{\Ic}_{E_{(0)}} + t \underbrace{F_{(1)}}_{E_{(1)}} + t^2 \underbrace{\left( \frac{F_{(2)}}{2} + \frac{F_{(1)}^2}{2} \right)}_{E_{(2)}} + t^3 \underbrace{\left(\frac{F_{(3)}}{3}+\frac{F_{(1)}F_{(2)}}{6} +\frac{F_{(2)}F_{(1)}}{3} + \frac{F_{(1)}^3}{3!} \right)}_{E_{(3)}} +O(t^4)
+% \end{align*}
+% which coincides with the first few terms obtained using the equation given in Theorem \ref{thm:time_ordered_expansion}:
+% \begin{align*}
+%     E_{(0)} &= \Ic,\\
+%     E_{(1)} &= F_{(1)}E_{(0)} = F_{(1)},\\
+%     E_{(2)} &= \frac{1}{2}(F_{(1)}E_{(1)} +  F_{(2)}E_{(0)}) = \frac{1}{2}(F_{(1)}^2 + F_{(2)}),\\
+%     E_{(2)} &= \frac{1}{3}(F_{(1)}E_{(2)} +  F_{(2)}E_{(1)} + F_{(3)}E_{(0)}) = \frac{1}{3}(\frac{1}{2}F_{(1)}^3 + \frac{1}{2}F_{(1)}F_{(2)} + F_{(2)}F_{(1)} +F_{(3)}).
+% \end{align*}
+% \hfill\qed
+% \end{exmp}
+\begin{proof}[Theorem \ref{thm:time_ordered_expansion}]
+    We shall start by proving that $\Tb e^{\int_0^t F_s ds} = \sum_{n=0}^{+\infty} \Phi_{(n),t}$ where $\Phi_{(0,t)} = \Ic$ and, for $n>0$, \[\Phi_{(n),t} = \sum_{k_1,\dots,k_n=1}^{N+1} t^{\sum_{j=1}^n k_j} \frac{ F_{(k_1)} \dots F_{(k_n)}}{\prod_{j=1}^n \sum_{h=n-j+1}^n k_h}.\]
+    First of all, using the Dyson series expansion for the time-ordered exponential $\Tb e^{\int_0^t F_s ds}$, see e.g. \cite{Dyson,argeri2014magnus,sakurai2020modern}, we have that: 
+    \[\Tb e^{\int_0^t F_s ds} = \sum_{n=0}^{+\infty} \Phi_{(n),t}\]  with  
+    \[\Phi_{(n),t} = \int_0^t dt_1\, \int_0^{t_1} dt_2\, \dots \int_0^{t_{n-1}} dt_n\, F_{t_1}F_{t_2}\dots F_{t_n}\,    .\]
+    Next, by noticing that \(\Phi_{(n),t} = \int_0^t ds\, F_{s} \Phi_{(n-1),s} \) we can prove the statement by induction.
+    The case $n=1$ is proven by simple calculations:
+    \begin{align*}
+        \Phi_{(1),t} &= \int_0^t ds\, F_{s}  = %\int_0^t ds\, \sum_{k_1=0}^N s^{k_1}F_{(k_1+1)}\\ &= 
+        \sum_{k_1=0}^{N} F_{(k_1+1)} \int_0^t ds\, s^{k_1} \\&
+        = \sum_{k_1=0}^{N} F_{(k_1+1)} \frac{t^{k_1+1}}{k_1+1}
+         = \sum_{k_1=1}^{N+1} F_{(k_1)} \frac{t^{k_1}}{k_1}.
+    \end{align*}
+    Note that $\int_0^t ds \sum_{k=0}^N = \sum_{k=0}^{N} \int_0^t ds$ under the assumption that $N$ is finite, i.e. $N<\infty$. 
+    We next assume that the statement holds for $n$, i.e. 
+    \[\Phi_{(n),t} = \sum_{k_1,\dots,k_n=1}^{N+1} t^{\sum_{j=1}^n k_j} \frac{F_{(k_1)}\dots F_{(k_n)}}{\prod_{j=1}^n \sum_{h=n-j+1}^n k_h}.\]
+    Then 
+    \begin{align*}
+        &\Phi_{(n+1),t} = \int_0^t ds\, F_s \Phi_{(n),s} =\\&
+        = \int_0^t ds\, F_s \sum_{k_1,\dots,k_n=1}^{N+1} s^{\sum_{j=1}^n k_j} \frac{ F_{(k_n)}\dots F_{(k_1)}}{\prod_{j=1}^n \sum_{h=n-j+1}^n k_h} \\
+        % &= \int_0^t ds\, \sum_{k=0}^{N} s^k F_{(k+1)} \sum_{k_1,\dots,k_n=1}^{N+1}  s^{\sum_{j=1}^n k_j} \frac{ F_{(k_1)} \dots F_{(k_n)}}{\prod_{j=1}^n \sum_{h=n-j+1}^n k_h} \\
+        &= \sum_{k=0}^{N} \sum_{k_1,\dots,k_n=1}^{N+1}  \frac{ F_{(k+1)} F_{(k_1)}\dots F_{(k_n)}}{\prod_{j=1}^n \sum_{h=n-j+1}^n k_h}  \int_0^t s^{k+\sum_{j=1}^n k_j} ds \\
+        &= \sum_{k=0}^{N} \sum_{k_1,\dots,k_n=1}^{N+1} \frac{t^{k+1+\sum_{j=1}^n k_j}}{k+1+\sum_{j=1}^n k_j} \frac{F_{(k+1)} F_{(k_1)}\dots F_{(k_n)}}{\prod_{j=1}^n \sum_{h=n-j+1}^n k_h}
+    \end{align*}
+    \begin{align*} %\Phi_{(n+1),t}       
+        &= \sum_{k=1}^{N+1} \sum_{k_1,\dots,k_n=1}^{N+1} \frac{t^{k+\sum_{j=1}^n k_j}}{k+\sum_{j=1}^n k_j} \frac{ F_{(k)}F_{(k_1)}\dots F_{(k_n)}}{\prod_{j=1}^n \sum_{h=n-j+1}^n k_h} 
+        \\&= \sum_{k_1=1}^{N+1} \sum_{k_2,\dots,k_{n+1}=1}^{N+1} \frac{t^{k_1+\sum_{j=2}^{n+1} k_j}}{k_1+\sum_{j=2}^{n+1} k_j} \frac{F_{(k_1)}F_{(k_2)}\dots F_{(k_{n+1})}}{\prod_{j=1}^{n} \sum_{h=n-j+2}^{n+1} k_h}\\
+        &= \sum_{k_1,\dots,k_{n+1}=1}^{N+1} \frac{t^{\sum_{j=1}^{n+1} k_j}}{\sum_{j=1}^{n+1} k_j} \frac{F_{(k_1)}\dots F_{(k_{n+1})}}{\prod_{j=1}^{n} \sum_{h=n-j+2}^{n+1} k_h}
+        \\&= \sum_{k_1,\dots,k_{n+1}=1}^{N+1} t^{\sum_{j=1}^{n+1} k_j} \frac{F_{(k_1)}\dots F_{(k_{n+1})}}{\prod_{j=1}^{n+1} \sum_{h=n-j+2}^{n+1} k_h}.
+    \end{align*}
+    thus proving the statement.
+
+    We next prove that \(\Tb e^{\int_0^t F_s ds} = \sum_{f=0}^{+\infty} t^k E_{(k)}\) where $E_{(0)} = \Ic$ and, for $k>0$,
+    \[ E_{(k)} = \sum_{n=1}^k \sum_{\substack{{k_1,\dots,k_{n} = 1}\\{\text{s.t. }\sum_{j=1}^{n}k_{j}=k}}}^{k} \frac{F_{(k_1)}\dots F_{(k_n)} }{\prod_{j=1}^n \sum_{h=n-j+1}^n k_h}. \]
+    To prove this claim we can start by noticing that each term $\Phi_{(n),t}$ contains powers $t^k$ of order $k\geq n$. Hence, to construct $E_{(k)}$ of order $k$ we need to collect and sum all the coefficients that multiply $t^k$ among the terms $\Phi_{(n),t}$ for $1\leq n\leq k$. Given $\Phi_{(n),t}$ with $n\leq k$ we have that the coefficient multiplying $t^k$ must satisfy the constraint $\sum_{j=1}^n k_j = k$. 
+    Thus, the coefficient of $\Phi_{(n),t}$ that multiply $t^k$ are
+    \[%\sum_{\substack{{k_1,\dots,k_{n} = 1}\\{\text{s.t. }\sum_{j=1}^{n}k_{j}=k}}}^{N+1} \frac{ F_{(k_1)}\dots F_{(k_n)}}{\prod_{j=1}^n \sum_{h=n-j+1}^n k_h} = 
+    \sum_{\substack{{k_1,\dots,k_{n} = 1}\\{\sum_{j=1}^{n}k_{j}=k}}}^{k} \frac{ F_{(k_1)}\dots F_{(k_n)}}{\prod_{j=1}^n \sum_{h=n-j+1}^n k_h}\]
+    where we used the fact that, if any $k_j>k$ then $\sum_{j=1}^n k_j>k$.  
+    Noticing that $\prod_{j=1}^n \sum_{h=n-j+1}^n k_h = k(\prod_{j=1}^{n-1} \sum_{h=n-j+1}^n k_h)$ and summing over $1\leq n\leq k$ we obtain, for $k>0$, the second claim, i.e.  
+    \[E_{(k)} = \sum_{n=1}^{k} \sum_{\substack{{k_1,\dots,k_{n} = 1}\\{\sum_{j=1}^{n}k_{j}=k}}}^{k} \frac{ F_{(k_1)}\dots F_{(k_n)}}{k(\prod_{j=1}^{n-1} \sum_{h=n-j+1}^n k_h)}.\]
+
+    We are now finally ready to prove the main claim of the theorem, that is: \(E_{(k)} = \frac{1}{k}\sum_{s=1}^{k}F_{(s)}E_{(k-s)}.\)
+    Recalling that $E_{(0)}=\one$ we can write:
+    \begin{align*}
+        &\frac{1}{k}\sum_{s=1}^{k} F_{(s)} E_{(k-s)}\\  &= \sum_{s=1}^{k-1} \frac{F_{(s)}}{k} E_{(k-s)} + \frac{F_{(k)}}{k} \\&
+        % = \sum_{s=1}^{k-1} \sum_{n=1}^{k-s} \sum_{\substack{{k_1,\dots,k_{n} = 1}\\{\text{s.t. }\sum_{j=1}^{n}k_{j}=k-s}}}^{k} \frac{F_{(s)}}{k} \frac{ F_{(k_1)}\dots F_{(k_n)}}{(k-s)(\prod_{j=1}^{n-1} \sum_{h=n-j+1}^n k_h)} + \frac{F_{(k)}}{k} \\
+        = \sum_{s=1}^{k-1}\sum_{n=1}^{k-1} \sum_{\substack{{k_1,\dots,k_{n} = 1}\\{\sum_{j=1}^{n}k_{j}=k-s}}}^{k} \frac{ F_{(s)} F_{(k_1)}\dots F_{(k_n)}}{k(k-s)(\prod_{j=1}^{n-1} \sum_{h=n-j+1}^n k_h)} \\&\qquad\qquad+ \frac{F_{(k)}}{k}  
+    \end{align*}
+    where we used the fact that \[\sum_{n=k-s+1}^{k-1} \sum_{\substack{{k_1,\dots,k_{n} = 1}\\{\sum_{j=1}^{n}k_{j}=k-s}}}^{k} \frac{ F_{(s)}F_{(k_1)}\dots F_{(k_n)}}{k(k-s)(\prod_{j=1}^{n-1} \sum_{h=n-j+1}^n k_h)} = 0\] since for $n>k-s$ we have that $\sum_{j=1}^{n}k_{j} > k-s$ for any set of $k_j$. This implies that
+    \begin{align*}
+        &\frac{1}{k}\sum_{s=1}^{k} F_{(s)}E_{(k-s)}  \\
+        &= \sum_{n=1}^{k} \sum_{s=1}^{k-1} \sum_{\substack{{k_1,\dots,k_{n} = 1}\\{\sum_{j=1}^{n}k_{j}=k-s}}}^{k} \frac{F_{(s)} F_{(k_1)}\dots F_{(k_n)}}{k(k-s)(\prod_{j=1}^{n-1} \sum_{h=n-j+1}^n k_h)} \\&\qquad\qquad +\frac{F_{(k)}}{k} \\
+        % &= \sum_{n=1}^{k-1} \sum_{k_1=1}^{k-1} \sum_{\substack{{k_2,\dots,k_{n+1} = 1}\\{\text{s.t. }\sum_{j=2}^{n+1}k_{j}=k-k_1}}}^{k} \frac{F_{(k_1)}}{k} \frac{ F_{(k_2)}\dots F_{(k_{n+1})}}{\underbrace{(k-k_1)}_{\sum_{h=2}^{n+1}k_h}(\prod_{j=1}^{n-1} \sum_{h=n-j+1}^n k_{h+1})} +\frac{F_{(k)}}{k} \\
+        % &= \sum_{n=1}^{k-1} \sum_{k_1=1}^{k-1} \sum_{\substack{{k_2,\dots,k_{n+1} = 1}\\{\text{s.t. }\sum_{j=1}^{n+1}k_{j}=k}}}^{k} \frac{F_{(k_1)} F_{(k_2)}\dots F_{(k_{n+1})}}{k(\prod_{j=1}^{n} \sum_{h=n-j+2}^{n+1} k_{h})} +\frac{F_{(k)}}{k}\\ 
+        % &= \sum_{n=2}^{k} \sum_{k_1=1}^{k-1} \sum_{\substack{{k_2,\dots,k_{n} = 1}\\{\text{s.t. }\sum_{j=1}^{n}k_{j}=k}}}^{k} \frac{F_{(k_1)} F_{(k_2)}\dots F_{(k_{n})}}{k(\prod_{j=1}^{n-1} \sum_{h=n-j+1}^{n} k_{h})}+\frac{F_{(k)}}{k}\\
+        &= \sum_{n=1}^{k} \sum_{k_1=1}^{k} \sum_{\substack{{k_2,\dots,k_{n} = 1}\\{\sum_{j=1}^{n}k_{j}=k}}}^{k} \frac{F_{(k_1)} F_{(k_2)}\dots F_{(k_{n})}}{k(\prod_{j=1}^{n-1} \sum_{h=n-j+1}^{n} k_{h})} = E_{(k)},
+    \end{align*}    
+    thus concluding the proof.
+\end{proof}
+
+Note that he technical reason why we choose to assume $F_t$ to be polynomial ($N<\infty$) instead of analytic is because in this proof we used in a couple of instances the property that $\int_0^t \sum_{k=0}^N s^k F_{(k+1)} ds = \sum_{k=0}^N \int_0^t s^k F_{(k+1)} ds $ which trivially holds if $N<\infty$. To lift this assumption we would need to assume some extra properties about the operators $F_{(k+1)}$ so that the order between the summation and integral can be changed.
+
+% \section{Calculations for the spin boson model}
+% \label{sec:spin_boson_model_calculations}
+% We can write  
+% \[H = \underbrace{\one_S}_{\equiv S_0} \otimes \underbrace{H_B}_{\equiv E_0} + \underbrace{\sigma_z}_{S_1} \otimes \underbrace{\left(\frac{g}{2}\one + \sum_k \lambda_k b_k + \overline{\lambda}_k b_k^\dag\right)}_{\equiv E_1}\]
+% so that the second order term becomes $F_{(2)}(\mu) = \sum_{j,k=0}^1 \chi_{j,k}(\rho_B) \left(S_j\mu S_k - \frac{1}{2}\{S_j^\dag S_k, \mu\}\right)$
+% where $\chi_{j,k}(\rho_B) = \expect{E_k E_j}_B - \expect{E_j}_B \expect{E_k}_B$. 
+% We can then start by noting that \(\expect{E_1}_B = g/2\) and 
+% \begin{align*}
+%     \expect{H_B}_B &= \sum_{k=1}^{N_B} \omega_k \left( \expect{b_k^\dag b_k}_B + \expect{\one}_B/2\right)= \sum_{k=1}^{N_B} \omega_k \left( \frac{1}{e^{\beta \omega_k}-1} + \frac{1}{2}\right) 
+%     = \sum_{k=1}^{N_B} \frac{\omega_k}{2} \frac{ e^{\beta \omega_k}+1}{e^{\beta \omega_k}-1}
+% \end{align*} 
+% in order to compute
+% \begin{align*}
+%     \chi_{1,0}(\rho_B) &= \expect{\left(\frac{g}{2}\one + \sum_j\lambda_j b_j + \overline{\lambda}_jb_j^\dag\right)\sum_k\omega_k\left(n_k+\frac{\one}{2}\right)}_B - \frac{g}{2} \expect{H_B}_B\\
+%     &= \sum_k \frac{g}{2}\omega_k (\expect{n_k}_B + \um) +\sum_{j}\lambda_j\omega_k \cancel{(\expect{b_jn_k}_B +\expect{b_j}_B)} + \overline{\lambda}_j\omega_k\cancel{\left(\expect{b_j^\dag n_k} + \expect{b_j^\dag}_B\right)} - \frac{g}{2} \expect{H_B}_B\\
+%     & = \sum_k \frac{g}{2}\omega_k \left(\frac{1}{e^{\beta \omega_k}-1} + \um\right) - \frac{g}{2} \frac{\omega_k}{2} \frac{ e^{\beta \omega_k}+1}{e^{\beta \omega_k}-1} = 0
+% \end{align*}
+% as $\expect{b_jn_k}_B = \expect{b_j^\dag n_k}_B =0$.
+
+% This fact directly implies that $F_{(2)}(\mu) = \sum_{j=0}^1 \chi_{j,j}(\rho_B)\Dc_{S_j}(\mu)$ and, since $S_0=\one_S$ we have that $\Dc_{S_0} = 0$ thus recovering $F_{(2)}(\mu) = \chi_{1,1}(\rho_B)\Dc_{\sigma_z}(\mu)$. It then remains to compute the coefficient
+% \begin{align*}
+%     \chi_{1,1}(\rho_B) &= \expect{\left(\frac{g}{2}\one + \sum_k \lambda_k b_k + \overline{\lambda}_k b_k^\dag\right)\left(\frac{g}{2}\one + \sum_k \lambda_k b_k + \overline{\lambda}_k b_k^\dag\right)}_B - \frac{g^2}{4}\\
+%     &= \cancel{\frac{g^2}{4}\expect{\one}_B} + \sum_k g\left(\lambda_k \cancel{\expect{b_k}_B} + \overline{\lambda}_k \cancel{\expect{b_k^\dag}_B}\right) \\&\qquad +\sum_{j,k} \left(\lambda_j\lambda_k \cancel{\expect{b_jb_k}}_B + \lambda_j\overline{\lambda}_k \expect{b_jb_k^\dag}_B + \overline{\lambda}_j\lambda_k \expect{b_j^\dag b_k}_B + \overline{\lambda_j}\overline{\lambda}_k \cancel{\expect{b_j^\dag b_k^\dag}_B}\right)  - \cancel{\frac{g^2}{4}}\\
+%     &= \sum_{k=1}^{N_B} \frac{2|\lambda_k|^2}{e^{\beta \omega_k}-1} \equiv \varphi.
+% \end{align*}
+
+% \endgroup
 \end{document}
