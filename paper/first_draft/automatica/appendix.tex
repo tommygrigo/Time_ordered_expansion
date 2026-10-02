@@ -1,0 +1,126 @@
+\section{Technical results and proofs for the time-ordered expansion}
+\label{sec:thechnical_results:time_ordered}
+Before proving the main result, Theorem \ref{thm:time_ordered_expansion}, we shall develop some intuition about how we prove it.
+\begin{example}
+To provide some intuition about Theorem \ref{thm:time_ordered_expansion} let us consider a simple case: \(F_t = F_{(1)} + t F_{(2)} +t^2 F_{(3)}\). 
+Let us first compute the first few terms of the Dyson expansion \cite{Dyson} of $\Tb e^{\int_0^t F_s ds}$, i.e. $\Tb e^{\int_0^t F_s ds} = \sum_{n=0}^{+\infty} \Phi_{(n),t}$.
+At zeroth order we have $\Phi_{(0),t} = \Ic$ while at orders $1,2$ and $3$ we have:
+\begin{align*}
+    \Phi_{(1),t} &= \int_0^t F_{s} ds = \int_0^t (F_{(1)} + sF_{(2)} + s^{2} F_{(3)}) ds = 
+    t F_{(1)} + t^2\frac{F_{(2)}}{2} + t^3 \frac{F_{(3)}}{3} ,
+\end{align*}
+\begin{align*}
+    \Phi_{(2),t} &= \int_0^t dt_1\, \int_0^{t_1} dt_2\, F_{t_1} F_{t_2} 
+    = \sum_{j=0}^{1} \int_0^t dt_1\, F_{t_1} F_{(j+1)} \int_0^{t_1} dt_2\,  t_2^j 
+    = \sum_{j=0}^{1} \int_0^t dt_1\, F_{t_1}F_{(j+1)}  \frac{t_1^{j+1}}{j+1}\\
+    & = \sum_{k,j=0}^{1} F_{(k+1)}F_{(j+1)} \int_0^t dt_1\, t_1^k \frac{t_1^{j+1}}{j+1} = \sum_{k,j=0}^{1} F_{(k+1)}F_{(j+1)} \frac{t^{k+j+2}}{(k+j+2)(j+1)} = \sum_{k,j=1}^{2} F_{(k)}F_{(j)} \frac{t^{k+j}}{(j+k)j}\\
+    &= \underbrace{F_{(1)}^2 \frac{t^2}{2}}_{j=k=1}
+    + \underbrace{F_{(2)}F_{(1)}\frac{t^3}{3}}_{j=1,k=2} 
+    + \underbrace{F_{(1)}F_{(2)}\frac{t^3}{6}}_{j=2,k=1} 
+    %+ \underbrace{F_{(2)}^2 \frac{t^4}{8}}_{j=k=2} 
+    + O(t^4),
+\end{align*}
+\begin{align*}
+    \Phi_{(3),t} &= \int_0^t dt_1 \int_0^{t_1} dt_2 \int_0^{t_2} dt_3 F_{t_1} F_{t_2} F_{t_3} = \int_0^t dt_1 F_{t_1} \underbrace{\int_0^{t_1} dt_2 \int_0^{t_2} dt_3  F_{t_2} F_{t_3}}_{= \sum_{j,k=1}^{2} F_{(k)}F_{(j)} \frac{t_1^{k+j}}{(j+k)j}}\\ 
+    &= \sum_{h,k,j=1}^{2} F_{(h)}F_{(k)}F_{(j)} \int_0^t dt_1\, t_1^h \frac{t_1^{k+j}}{(j+k)j} = \sum_{h,k,j=1}^{2} F_{(h)}F_{(k)}F_{(j)}  \frac{t^{h+k+j}}{(h+k+j)(j+k)j} 
+     = \underbrace{F_{(1)}^3 \frac{t^{3}}{3!}}_{h=k=j=1} + O(t^4).
+\end{align*}
+Grouping together the terms of $\Tb e^{\int_0^t F_s ds}$ by the order of the exponent of $t$, we have 
+\begin{align*}
+    \Tb e^{\int_0^t F_s ds} &= \underbrace{\Ic}_{E_{(0)}} + t \underbrace{F_{(1)}}_{E_{(1)}} + t^2 \underbrace{\left( \frac{F_{(2)}}{2} + \frac{F_{(1)}^2}{2} \right)}_{E_{(2)}} + t^3 \underbrace{\left(\frac{F_{(3)}}{3}+\frac{F_{(1)}F_{(2)}}{6} +\frac{F_{(2)}F_{(1)}}{3} + \frac{F_{(1)}^3}{3!} \right)}_{E_{(3)}} +O(t^4)
+\end{align*}
+which coincides with the first few terms obtained using the equation given in Theorem \ref{thm:time_ordered_expansion}:
+\begin{align*}
+    E_{(0)} &= \Ic,\\
+    E_{(1)} &= F_{(1)}E_{(0)} = F_{(1)},\\
+    E_{(2)} &= \frac{1}{2}(F_{(1)}E_{(1)} +  F_{(2)}E_{(0)}) = \frac{1}{2}(F_{(1)}^2 + F_{(2)}),\\
+    E_{(2)} &= \frac{1}{3}(F_{(1)}E_{(2)} +  F_{(2)}E_{(1)} + F_{(3)}E_{(0)}) = \frac{1}{3}(\frac{1}{2}F_{(1)}^3 + \frac{1}{2}F_{(1)}F_{(2)} + F_{(2)}F_{(1)} +F_{(3)}).
+\end{align*}
+\hfill\qed
+\end{example}
+\begin{proof}[Theorem \ref{thm:time_ordered_expansion}]
+    We shall start by proving that $\Tb e^{\int_0^t F_s ds} = \sum_{n=0}^{+\infty} \Phi_{(n),t}$ where $\Phi_{(0,t)} = \Ic$ and, for $n>0$, \[\Phi_{(n),t} = \sum_{k_1,\dots,k_n=1}^{N+1} t^{\sum_{j=1}^n k_j} \frac{ F_{(k_1)} \dots F_{(k_n)}}{\prod_{j=1}^n \sum_{h=n-j+1}^n k_h}.\]
+    First of all, using the Dyson series expansion for the time-ordered exponential $\Tb e^{\int_0^t F_s ds}$, see e.g. \cite{Dyson, argeri2014magnus, sakurai2020modern}, we have that: 
+    \[\Tb e^{\int_0^t F_s ds} = \sum_{n=0}^{+\infty} \Phi_{(n),t} \qquad\text{ with }\qquad 
+    \Phi_{(n),t} = \int_0^t dt_1\, \int_0^{t_1} dt_2\, \dots \int_0^{t_{n-1}} dt_n\, F_{t_1}F_{t_2}\dots F_{t_n}\,    .\]
+    Next, by noticing that \(\Phi_{(n),t} = \int_0^t ds\, F_{s} \Phi_{(n-1),s} \) we can prove the statement by induction.
+    The case $n=1$ is proven by simple calculations:
+    \begin{align*}
+        \Phi_{(1),t} &= \int_0^t ds\, F_{s}  = \int_0^t ds\, \sum_{k_1=0}^N s^{k_1}F_{(k_1+1)} = \sum_{k_1=0}^{N} F_{(k_1+1)} \int_0^t ds\, s^{k_1}  
+        = \sum_{k_1=0}^{N} F_{(k_1+1)} \frac{t^{k_1+1}}{k_1+1} 
+         = \sum_{k_1=1}^{N+1} F_{(k_1)} \frac{t^{k_1}}{k_1}.
+    \end{align*}
+    Note that $\int_0^t ds \sum_{k=0}^N = \sum_{k=0}^{N} \int_0^t ds$ under the assumption that $N$ is finite, i.e. $N<\infty$. 
+    We next assume that the statement holds for $n$, i.e. 
+    \[\Phi_{(n),t} = \sum_{k_1,\dots,k_n=1}^{N+1} t^{\sum_{j=1}^n k_j} \frac{F_{(k_1)}\dots F_{(k_n)}}{\prod_{j=1}^n \sum_{h=n-j+1}^n k_h}.\]
+    Then 
+    \begin{align*}
+        \Phi_{(n+1),t} &= \int_0^t ds\, F_s \Phi_{(n),s} 
+        = \int_0^t ds\, F_s \sum_{k_1,\dots,k_n=1}^{N+1} s^{\sum_{j=1}^n k_j} \frac{ F_{(k_n)}\dots F_{(k_1)}}{\prod_{j=1}^n \sum_{h=n-j+1}^n k_h} \\
+        &= \int_0^t ds\, \sum_{k=0}^{N} s^k F_{(k+1)} \sum_{k_1,\dots,k_n=1}^{N+1}  s^{\sum_{j=1}^n k_j} \frac{ F_{(k_1)} \dots F_{(k_n)}}{\prod_{j=1}^n \sum_{h=n-j+1}^n k_h} \\
+        &= \sum_{k=0}^{N} \sum_{k_1,\dots,k_n=1}^{N+1} F_{(k+1)} \frac{ F_{(k_1)}\dots F_{(k_n)}}{\prod_{j=1}^n \sum_{h=n-j+1}^n k_h}  \int_0^t s^{k+\sum_{j=1}^n k_j} ds \\
+        &= \sum_{k=0}^{N} \sum_{k_1,\dots,k_n=1}^{N+1} \frac{t^{k+1+\sum_{j=1}^n k_j}}{k+1+\sum_{j=1}^n k_j} F_{(k+1)} \frac{F_{(k_1)}\dots F_{(k_n)}}{\prod_{j=1}^n \sum_{h=n-j+1}^n k_h}
+    \end{align*}
+    \begin{align*} \Phi_{(n+1),t}       
+        &= \sum_{k=1}^{N+1} \sum_{k_1,\dots,k_n=1}^{N+1} \frac{t^{k+\sum_{j=1}^n k_j}}{k+\sum_{j=1}^n k_j} F_{(k)} \frac{F_{(k_1)}\dots F_{(k_n)}}{\prod_{j=1}^n \sum_{h=n-j+1}^n k_h} 
+        = \sum_{k_1=1}^{N+1} \sum_{k_2,\dots,k_{n+1}=1}^{N+1} \frac{t^{k_1+\sum_{j=2}^{n+1} k_j}}{k_1+\sum_{j=2}^{n+1} k_j} \frac{F_{(k_1)}F_{(k_2)}\dots F_{(k_{n+1})}}{\prod_{j=1}^{n} \sum_{h=n-j+2}^{n+1} k_h}\\
+        &= \sum_{k_1,\dots,k_{n+1}=1}^{N+1} \frac{t^{\sum_{j=1}^{n+1} k_j}}{\sum_{j=1}^{n+1} k_j} \frac{F_{(k_1)}\dots F_{(k_{n+1})}}{\prod_{j=1}^{n} \sum_{h=n-j+2}^{n+1} k_h}
+        = \sum_{k_1,\dots,k_{n+1}=1}^{N+1} t^{\sum_{j=1}^{n+1} k_j} \frac{F_{(k_1)}\dots F_{(k_{n+1})}}{\prod_{j=1}^{n+1} \sum_{h=n-j+2}^{n+1} k_h}.
+    \end{align*}
+    thus proving the statement.
+
+    We next prove that \(\Tb e^{\int_0^t F_s ds} = \sum_{f=0}^{+\infty} t^k E_{(k)}\) where $E_{(0)} = \Ic$ and, for $k>0$,
+    \[ E_{(k)} = \sum_{n=1}^k \sum_{\substack{{k_1,\dots,k_{n} = 1}\\{\text{s.t. }\sum_{j=1}^{n}k_{j}=k}}}^{k} \frac{F_{(k_1)}\dots F_{(k_n)} }{\prod_{j=1}^n \sum_{h=n-j+1}^n k_h}. \]
+    To prove this claim we can start by noticing that each term $\Phi_{(n),t}$ contains powers $t^k$ of order $k\geq n$. Hence, to construct $E_{(k)}$ of order $k$ we need to collect and sum all the coefficients that multiply $t^k$ among the terms $\Phi_{(n),t}$ for $1\leq n\leq k$. Given $\Phi_{(n),t}$ with $n\leq k$ we have that the coefficient multiplying $t^k$ must satisfy the constraint $\sum_{j=1}^n k_j = k$. 
+    Thus, the coefficient of $\Phi_{(n),t}$ that multiply $t^k$ are
+    \[\sum_{\substack{{k_1,\dots,k_{n} = 1}\\{\text{s.t. }\sum_{j=1}^{n}k_{j}=k}}}^{N+1} \frac{ F_{(k_1)}\dots F_{(k_n)}}{\prod_{j=1}^n \sum_{h=n-j+1}^n k_h} = \sum_{\substack{{k_1,\dots,k_{n} = 1}\\{\text{s.t. }\sum_{j=1}^{n}k_{j}=k}}}^{k} \frac{ F_{(k_1)}\dots F_{(k_n)}}{\prod_{j=1}^n \sum_{h=n-j+1}^n k_h}\]
+    where we used the fact that, if any $k_j>k$ then $\sum_{j=1}^n k_j>k$.  
+    Noticing that $\prod_{j=1}^n \sum_{h=n-j+1}^n k_h = k(\prod_{j=1}^{n-1} \sum_{h=n-j+1}^n k_h)$ and summing over $1\leq n\leq k$ we obtain, for $k>0$, the second claim, i.e.  
+    \[E_{(k)} = \sum_{n=1}^{k} \sum_{\substack{{k_1,\dots,k_{n} = 1}\\{\text{s.t. }\sum_{j=1}^{n}k_{j}=k}}}^{k} \frac{ F_{(k_1)}\dots F_{(k_n)}}{k(\prod_{j=1}^{n-1} \sum_{h=n-j+1}^n k_h)}.\]
+
+    We are now finally ready to prove the main claim of the theorem, that is: \(E_{(k)} = \frac{1}{k}\sum_{s=1}^{k}F_{(s)}E_{(k-s)}.\)
+    Recalling that $E_{(0)}=\Ic$ we can write:
+    \begin{align*}
+        \frac{1}{k}\sum_{s=1}^{k} F_{(s)} E_{(k-s)}  &= \sum_{s=1}^{k-1} \frac{F_{(s)}}{k} E_{(k-s)} + \frac{F_{(k)}}{k} \\
+        &= \sum_{s=1}^{k-1} \sum_{n=1}^{k-s} \sum_{\substack{{k_1,\dots,k_{n} = 1}\\{\text{s.t. }\sum_{j=1}^{n}k_{j}=k-s}}}^{k} \frac{F_{(s)}}{k} \frac{ F_{(k_1)}\dots F_{(k_n)}}{(k-s)(\prod_{j=1}^{n-1} \sum_{h=n-j+1}^n k_h)} + \frac{F_{(k)}}{k} \\
+        &= \sum_{s=1}^{k-1}\sum_{n=1}^{k-1} \sum_{\substack{{k_1,\dots,k_{n} = 1}\\{\text{s.t. }\sum_{j=1}^{n}k_{j}=k-s}}}^{k} \frac{F_{(s)}}{k} \frac{ F_{(k_1)}\dots F_{(k_n)}}{(k-s)(\prod_{j=1}^{n-1} \sum_{h=n-j+1}^n k_h)} + \frac{F_{(k)}}{k}  
+    \end{align*}
+    where we used the fact that $\sum_{n=k-s+1}^{k-1} \sum_{\substack{{k_1,\dots,k_{n} = 1}\\{\text{s.t. }\sum_{j=1}^{n}k_{j}=k-s}}}^{k} \frac{F_{(s)}}{k} \frac{ F_{(k_1)}\dots F_{(k_n)}}{(k-s)(\prod_{j=1}^{n-1} \sum_{h=n-j+1}^n k_h)} = 0$ since for $n>k-s$ we have that $\sum_{j=1}^{n}k_{j} > k-s$ for any set of $k_j$. This implies that
+    \begin{align*}
+        \frac{1}{k}\sum_{s=1}^{k} F_{(s)}E_{(k-s)}  
+        &= \sum_{n=1}^{k} \sum_{s=1}^{k-1} \sum_{\substack{{k_1,\dots,k_{n} = 1}\\{\text{s.t. }\sum_{j=1}^{n}k_{j}=k-s}}}^{k} \frac{F_{(s)}}{k} \frac{ F_{(k_1)}\dots F_{(k_n)}}{(k-s)(\prod_{j=1}^{n-1} \sum_{h=n-j+1}^n k_h)} +\frac{F_{(k)}}{k} \\
+        &= \sum_{n=1}^{k-1} \sum_{k_1=1}^{k-1} \sum_{\substack{{k_2,\dots,k_{n+1} = 1}\\{\text{s.t. }\sum_{j=2}^{n+1}k_{j}=k-k_1}}}^{k} \frac{F_{(k_1)}}{k} \frac{ F_{(k_2)}\dots F_{(k_{n+1})}}{\underbrace{(k-k_1)}_{\sum_{h=2}^{n+1}k_h}(\prod_{j=1}^{n-1} \sum_{h=n-j+1}^n k_{h+1})} +\frac{F_{(k)}}{k} \\
+        &= \sum_{n=1}^{k-1} \sum_{k_1=1}^{k-1} \sum_{\substack{{k_2,\dots,k_{n+1} = 1}\\{\text{s.t. }\sum_{j=1}^{n+1}k_{j}=k}}}^{k} \frac{F_{(k_1)} F_{(k_2)}\dots F_{(k_{n+1})}}{k(\prod_{j=1}^{n} \sum_{h=n-j+2}^{n+1} k_{h})} +\frac{F_{(k)}}{k} \\
+        &= \sum_{n=2}^{k} \sum_{k_1=1}^{k-1} \sum_{\substack{{k_2,\dots,k_{n} = 1}\\{\text{s.t. }\sum_{j=1}^{n}k_{j}=k}}}^{k} \frac{F_{(k_1)} F_{(k_2)}\dots F_{(k_{n})}}{k(\prod_{j=1}^{n-1} \sum_{h=n-j+1}^{n} k_{h})}+\frac{F_{(k)}}{k}\\
+        &= \sum_{n=1}^{k} \sum_{k_1=1}^{k} \sum_{\substack{{k_2,\dots,k_{n} = 1}\\{\text{s.t. }\sum_{j=1}^{n}k_{j}=k}}}^{k} \frac{F_{(k_1)} F_{(k_2)}\dots F_{(k_{n})}}{k(\prod_{j=1}^{n-1} \sum_{h=n-j+1}^{n} k_{h})} = E_{(k)},
+    \end{align*}    
+    thus concluding the proof.
+\end{proof}
+
+Note that he technical reason why we choose to assume $F_t$ to be polynomial ($N<\infty$) instead of analytic is because in this proof we used in a couple of instances the property that $\int_0^t \sum_{k=0}^N s^k F_{(k+1)} ds = \sum_{k=0}^N \int_0^t s^k F_{(k+1)} ds $ which trivially holds if $N<\infty$. To lift this assumption we would need to assume some extra properties about the operators $F_{(k+1)}$ so that the order between the summation and integral can be changed.
+
+\section{Calculations for the spin boson model}
+\label{sec:spin_boson_model_calculations}
+We can write  
+\[H = \underbrace{\one_S}_{\equiv S_0} \otimes \underbrace{H_B}_{\equiv E_0} + \underbrace{\sigma_z}_{S_1} \otimes \underbrace{\left(\frac{g}{2}\one + \sum_k \lambda_k b_k + \overline{\lambda}_k b_k^\dag\right)}_{\equiv E_1}\]
+so that the second order term becomes $F_{(2)}(\mu) = \sum_{j,k=0}^1 \chi_{j,k}(\rho_B) \left(S_j\mu S_k - \frac{1}{2}\{S_j^\dag S_k, \mu\}\right)$
+where $\chi_{j,k}(\rho_B) = \expect{E_k E_j}_B - \expect{E_j}_B \expect{E_k}_B$. 
+We can then start by noting that \(\expect{E_1}_B = g/2\) and 
+\begin{align*}
+    \expect{H_B}_B &= \sum_{k=1}^{N_B} \omega_k \left( \expect{b_k^\dag b_k}_B + \expect{\one}_B/2\right)= \sum_{k=1}^{N_B} \omega_k \left( \frac{1}{e^{\beta \omega_k}-1} + \frac{1}{2}\right) 
+    = \sum_{k=1}^{N_B} \frac{\omega_k}{2} \frac{ e^{\beta \omega_k}+1}{e^{\beta \omega_k}-1}
+\end{align*} 
+in order to compute
+\begin{align*}
+    \chi_{1,0}(\rho_B) &= \expect{\left(\frac{g}{2}\one + \sum_j\lambda_j b_j + \overline{\lambda}_jb_j^\dag\right)\sum_k\omega_k\left(n_k+\frac{\one}{2}\right)}_B - \frac{g}{2} \expect{H_B}_B\\
+    &= \sum_k \frac{g}{2}\omega_k (\expect{n_k}_B + \um) +\sum_{j}\lambda_j\omega_k \cancel{(\expect{b_jn_k}_B +\expect{b_j}_B)} + \overline{\lambda}_j\omega_k\cancel{\left(\expect{b_j^\dag n_k} + \expect{b_j^\dag}_B\right)} - \frac{g}{2} \expect{H_B}_B\\
+    & = \sum_k \frac{g}{2}\omega_k \left(\frac{1}{e^{\beta \omega_k}-1} + \um\right) - \frac{g}{2} \frac{\omega_k}{2} \frac{ e^{\beta \omega_k}+1}{e^{\beta \omega_k}-1} = 0
+\end{align*}
+as $\expect{b_jn_k}_B = \expect{b_j^\dag n_k}_B =0$.
+
+This fact directly implies that $F_{(2)}(\mu) = \sum_{j=0}^1 \chi_{j,j}(\rho_B)\Dc_{S_j}(\mu)$ and, since $S_0=\one_S$ we have that $\Dc_{S_0} = 0$ thus recovering $F_{(2)}(\mu) = \chi_{1,1}(\rho_B)\Dc_{\sigma_z}(\mu)$. It then remains to compute the coefficient
+\begin{align*}
+    \chi_{1,1}(\rho_B) &= \expect{\left(\frac{g}{2}\one + \sum_k \lambda_k b_k + \overline{\lambda}_k b_k^\dag\right)\left(\frac{g}{2}\one + \sum_k \lambda_k b_k + \overline{\lambda}_k b_k^\dag\right)}_B - \frac{g^2}{4}\\
+    &= \cancel{\frac{g^2}{4}\expect{\one}_B} + \sum_k g\left(\lambda_k \cancel{\expect{b_k}_B} + \overline{\lambda}_k \cancel{\expect{b_k^\dag}_B}\right) \\&\qquad +\sum_{j,k} \left(\lambda_j\lambda_k \cancel{\expect{b_jb_k}}_B + \lambda_j\overline{\lambda}_k \expect{b_jb_k^\dag}_B + \overline{\lambda}_j\lambda_k \expect{b_j^\dag b_k}_B + \overline{\lambda_j}\overline{\lambda}_k \cancel{\expect{b_j^\dag b_k^\dag}_B}\right)  - \cancel{\frac{g^2}{4}}\\
+    &= \sum_{k=1}^{N_B} \frac{2|\lambda_k|^2}{e^{\beta \omega_k}-1} \equiv \varphi.
+\end{align*}
